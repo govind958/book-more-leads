@@ -1,468 +1,686 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 import {
   ArrowRight,
   ArrowUpRight,
-  CheckCircle2,
+  BarChart3,
+  CalendarCheck,
+  Check,
+  ChevronDown,
   Clock,
-  Layout,
+  Globe,
   MessageSquare,
-  Phone,
-  Sparkles,
+  PhoneCall,
+  Search,
+  ShieldCheck,
   Star,
-  X,
+  Target,
+  TrendingUp,
+  Workflow,
   Zap,
 } from "lucide-react";
 
-/* =========================================================
-   DATA
-========================================================= */
-
-const services = [
-  {
-    number: "01",
-    title: "Conversion-Focused Websites",
-    description:
-      "Professional websites designed to turn visitors into calls, quote requests, and booked appointments.",
-    icon: Layout,
-  },
-  {
-    number: "02",
-    title: "Instant Lead Capture",
-    description:
-      "Capture new inquiries immediately and make sure every lead gets where it needs to go.",
-    icon: Zap,
-  },
-  {
-    number: "03",
-    title: "24/7 Lead Follow-Up",
-    description:
-      "Automated SMS and email follow-up keeps conversations moving while you are busy on the job.",
-    icon: Clock,
-  },
-  {
-    number: "04",
-    title: "Appointment Booking",
-    description:
-      "Let qualified prospects book calls and estimates directly without endless back-and-forth.",
-    icon: Sparkles,
-  },
-];
-
-const processSteps = [
-  {
-    number: "1",
-    title: "We find the leaks",
-    description:
-      "We look at your website, lead flow, and follow-up process to find where potential jobs are being lost.",
-  },
-  {
-    number: "2",
-    title: "We build your system",
-    description:
-      "We build your conversion-focused website and automated lead follow-up system around your business.",
-  },
-  {
-    number: "3",
-    title: "You start booking more",
-    description:
-      "Your system responds, follows up, and helps move new inquiries toward booked calls and estimates—even when you are busy.",
-  },
-];
-
-const reviews = [
-  {
-    initials: "JD",
-    title: "Finally, marketing that makes sense",
-    text: "They showed me where leads were actually falling through instead of selling me more marketing.",
-    name: "Contractor Owner",
-  },
-  {
-    initials: "MK",
-    title: "Leads no longer wait for me",
-    text: "When I am on a job, the system keeps the conversation moving instead of letting the lead go cold.",
-    name: "Mike R.",
-  },
-  {
-    initials: "AR",
-    title: "Simple and useful",
-    text: "The website looks professional and the follow-up system takes a lot of work off my plate.",
-    name: "Alex R.",
-  },
-  {
-    initials: "TS",
-    title: "The follow-up was the missing piece",
-    text: "We did not need more leads first. We needed to stop losing the ones we already had.",
-    name: "Tom S.",
-  },
-];
-
-/* =========================================================
-   REVIEW CARD (reused for both marquee copies)
-========================================================= */
-
-function ReviewCard({ review }: { review: (typeof reviews)[number] }) {
-  return (
-    <article className="flex w-[300px] shrink-0 flex-col rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm transition-shadow hover:shadow-md sm:w-[340px]">
-      {/* Stars */}
-      <div className="flex justify-center gap-1">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Star
-            key={`star-${i}`}
-            className="h-3.5 w-3.5 fill-amber-400 text-amber-400"
-          />
-        ))}
-      </div>
-
-      {/* Title */}
-      <h3 className="mt-4 text-sm font-bold text-slate-950">{review.title}</h3>
-
-      {/* Text */}
-      <p className="mt-2 text-sm leading-6 text-slate-500">{review.text}</p>
-
-      {/* Reviewer */}
-      <div className="mt-5 flex items-center justify-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-[9px] font-black text-white">
-          {review.initials}
-        </div>
-        <p className="text-xs font-bold text-slate-800">{review.name}</p>
-      </div>
-    </article>
-  );
-}
-
-/* =========================================================
-   PAGE
-========================================================= */
-
 export default function Home() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [chatOpen, setChatOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const closeMobileMenu = () => setMobileMenuOpen(false);
+  const systems = [
+    {
+      icon: <Globe className="h-6 w-6 text-blue-400" />,
+      title: "High-Converting Website",
+      description:
+        "A clean contractor website built to turn visitors into calls, messages, and quote requests.",
+    },
+    {
+      icon: <PhoneCall className="h-6 w-6 text-blue-400" />,
+      title: "Missed-Call Textback",
+      description:
+        "When you miss a call, the system automatically follows up so the lead doesn't disappear.",
+    },
+    {
+      icon: <Workflow className="h-6 w-6 text-blue-400" />,
+      title: "Lead Follow-Up",
+      description:
+        "New leads get timely messages and follow-ups instead of sitting unanswered in your inbox.",
+    },
+    {
+      icon: <CalendarCheck className="h-6 w-6 text-blue-400" />,
+      title: "Appointment Booking",
+      description:
+        "Give qualified prospects an easy way to book the next step without endless back-and-forth.",
+    },
+    {
+      icon: <Star className="h-6 w-6 text-blue-400" />,
+      title: "Review Automation",
+      description:
+        "Make it easier to consistently ask happy customers for Google reviews after the job.",
+    },
+    {
+      icon: <Search className="h-6 w-6 text-blue-400" />,
+      title: "Local Visibility",
+      description:
+        "Build the online presence contractors need to be found when local customers are ready to hire.",
+    },
+  ];
+
+  const faqs = [
+    {
+      question: "What exactly do you build?",
+      answer:
+        "We build a connected lead-to-job system around your business. Depending on what you need, that can include your website, missed-call textback, lead follow-up, appointment booking, review automation, and local visibility.",
+    },
+    {
+      question: "Do I need to learn complicated software?",
+      answer:
+        "No. The goal is to build and manage the system for you so you can stay focused on running your contracting business.",
+    },
+    {
+      question: "How long does setup take?",
+      answer:
+        "The exact timeline depends on the system and integrations involved. After the initial call, we'll map out what needs to be built and give you a clear launch timeline.",
+    },
+    {
+      question: "Is this only for roofing companies?",
+      answer:
+        "No. The system can be used across many home-service businesses including roofing, HVAC, plumbing, electrical, landscaping, remodeling, solar, painting, and more.",
+    },
+    {
+      question: "How much does it cost?",
+      answer:
+        "Pricing depends on the system your business actually needs. Book a strategy call and we'll walk through the setup and monthly service options.",
+    },
+  ];
+
+  const industries = [
+    "Roofing",
+    "HVAC",
+    "Plumbing",
+    "Electrical",
+    "Solar",
+    "Landscaping",
+    "Remodeling",
+    "Painting",
+  ];
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-slate-50 text-slate-950">
+    <main className="relative min-h-screen overflow-hidden bg-[#091413] text-slate-100">
+      {/* Background */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.025]">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "url(https://grainy-gradients.vercel.app/noise.svg)",
+          }}
+        />
+      </div>
 
-      {/* =========================================================
-          NAVBAR
-      ========================================================= */}
-      <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-xl">
-        <nav className="mx-auto flex h-[76px] w-full max-w-[1600px] items-center justify-between px-5 sm:px-8 lg:px-12 xl:px-16">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#ffffff20_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.045]" />
 
-          {/* Logo */}
+      <div className="pointer-events-none absolute left-1/2 top-[-300px] h-[700px] w-[900px] -translate-x-1/2 rounded-full bg-blue-600/10 blur-[140px]" />
+
+      {/* NAVBAR */}
+      <nav className="relative z-30 mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-8">
+        {/* Logo */}
+        <a href="/" className="flex items-center gap-2">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 shadow-lg shadow-blue-600/20">
+            <ArrowUpRight className="h-5 w-5 text-white" />
+          </div>
+
+          <div className="leading-none">
+            <div className="text-[15px] font-extrabold tracking-tight text-white">
+              BOOK MORE <span className="text-blue-400">LEADS</span>
+            </div>
+            <div className="mt-1 text-[9px] font-medium uppercase tracking-[0.18em] text-slate-500">
+              Lead → Job System
+            </div>
+          </div>
+        </a>
+
+        {/* Navigation */}
+        <div className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex">
           <a
-            href="/"
-            aria-label="Home"
-            onClick={() => setMobileMenuOpen(false)}
-            className="relative block h-[58px] w-[220px] shrink-0 overflow-hidden sm:h-[62px] sm:w-[250px]"
+            href="/products"
+            className="transition-colors hover:text-white"
           >
-            <img
-              src="/2.svg"
-              alt="Book More Leads"
-              className="absolute inset-0 h-full w-full object-cover object-center"
-            />
+            Products
           </a>
 
-          {/* Desktop navigation */}
-          <nav className="hidden items-center gap-1 lg:flex">
-            <a
-              href="#what-we-do"
-              className="rounded-full px-4 py-2.5 text-[15px] font-medium text-slate-700 transition-all duration-200 hover:bg-[#1473FF]/10 hover:text-slate-950"
-            >
-              What We Do
-            </a>
-            <a
-              href="#how-it-works"
-              className="rounded-full px-4 py-2.5 text-[15px] font-medium text-slate-700 transition-all duration-200 hover:bg-[#1473FF]/10 hover:text-slate-950"
-            >
-              How It Works
-            </a>
-            <a
-              href="#reviews"
-              className="rounded-full px-4 py-2.5 text-[15px] font-medium text-slate-700 transition-all duration-200 hover:bg-[#1473FF]/10 hover:text-slate-950"
-            >
-              Reviews
-            </a>
-            <a
-              href="#contact"
-              className="rounded-full px-4 py-2.5 text-[15px] font-medium text-slate-700 transition-all duration-200 hover:bg-[#1473FF]/10 hover:text-slate-950"
-            >
-              Contact
-            </a>
-          </nav>
-
-          {/* Desktop CTA */}
-          <div className="hidden items-center gap-2 lg:flex">
-            <a
-              href="#contact"
-              className="rounded-full px-5 py-2.5 text-[15px] font-semibold text-slate-700 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-950"
-            >
-              Contact
-            </a>
-            <a
-              href="/bookingcall"
-              className="rounded-full bg-[#1473FF] px-6 py-3 text-[15px] font-semibold text-white shadow-[0_10px_30px_rgba(20,115,255,0.25)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#0867E8] hover:shadow-[0_14px_36px_rgba(20,115,255,0.35)]"
-            >
-              Book Call
-            </a>
-          </div>
-
-          {/* Mobile menu button */}
-          <button
-            type="button"
-            aria-label="Toggle navigation menu"
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen((open) => !open)}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-900 transition-colors hover:border-[#1473FF]/40 hover:bg-[#1473FF]/10 lg:hidden"
+          <a
+            href="/price"
+            className="transition-colors hover:text-white"
           >
-            {mobileMenuOpen ? (
-              <X className="h-[22px] w-[22px]" />
-            ) : (
-              <span className="flex flex-col gap-[5px]">
-                <span className="block h-[2px] w-5 rounded-full bg-slate-900" />
-                <span className="block h-[2px] w-5 rounded-full bg-slate-900" />
-                <span className="block h-[2px] w-5 rounded-full bg-slate-900" />
+            Price
+          </a>
+
+         
+        </div>
+
+        {/* CTA */}
+        <a
+          href="/callbooking"
+          className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-500"
+        >
+          Book a Call
+          <ArrowRight className="h-4 w-4" />
+        </a>
+      </nav>
+
+      {/* HERO */}
+      <section className="relative z-10 mx-auto flex max-w-6xl flex-col items-center px-6 pb-24 pt-20 text-center sm:pt-28 lg:pb-32 lg:pt-32">
+       
+       {/* Headline */}
+        <h1 className="max-w-5xl text-5xl font-extrabold leading-[0.94] tracking-[-0.055em] text-white sm:text-6xl md:text-7xl lg:text-[88px]">
+          Stop losing good jobs because{" "}
+          <span className="text-blue-400">leads slip through the cracks.</span>
+        </h1>
+
+        {/* Subheading */}
+        <p className="mt-8 max-w-2xl text-base font-light leading-7 text-slate-400 sm:text-lg sm:leading-8">
+          We build the system that helps contractors turn more inquiries into
+          conversations, appointments, and booked jobs — without adding more
+          work to your day.
+        </p>
+
+        {/* CTA */}
+        <div className="relative mt-10">
+          {/* Glow */}
+          <div className="pointer-events-none absolute -inset-5 rounded-full bg-blue-600/25 blur-2xl" />
+
+          <a
+             href="/callbooking"
+            className="group relative inline-flex items-center gap-3 rounded-full bg-blue-600 px-8 py-4 text-base font-bold text-white shadow-2xl shadow-blue-950/50 transition-all hover:-translate-y-0.5 hover:bg-blue-500 sm:px-10 sm:py-4.5"
+          >
+            {/* Facepile */}
+            {/* Overlapping Avatar Group */}
+    <div className="flex items-center -space-x-2">
+      <img
+        src="https://i.pravatar.cc/80?img=12"
+        alt=""
+        className="h-7 w-7 rounded-full border-2 border-[#2563EB] object-cover"
+      />
+      <img
+        src="https://i.pravatar.cc/80?img=32"
+        alt=""
+        className="h-7 w-7 rounded-full border-2 border-[#2563EB] object-cover"
+      />
+      <img
+        src="https://i.pravatar.cc/80?img=47"
+        alt=""
+        className="h-7 w-7 rounded-full border-2 border-[#2563EB] object-cover"
+      />
+    </div>
+
+            <span>Book a Free Strategy Call</span>
+
+            <ArrowRight
+              className="h-5 w-5 transition-transform group-hover:translate-x-1"
+            />
+          </a>
+        </div>
+
+        {/* CTA reassurance */}
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-slate-500">
+          <span className="flex items-center gap-1.5">
+            <Check className="h-3.5 w-3.5 text-blue-400" />
+            20-minute call
+          </span>
+
+          <span className="hidden h-1 w-1 rounded-full bg-slate-700 sm:block" />
+
+          <span className="flex items-center gap-1.5">
+            <Check className="h-3.5 w-3.5 text-blue-400" />
+            No pressure
+          </span>
+
+          <span className="hidden h-1 w-1 rounded-full bg-slate-700 sm:block" />
+
+          <span className="flex items-center gap-1.5">
+            <Check className="h-3.5 w-3.5 text-blue-400" />
+            See where leads are being lost
+          </span>
+        </div>
+
+        {/* Bottom proof strip */}
+         {/* Tech Stack Logos - Placeholder */}
+        <div className="mt-24 w-full max-w-4xl border-t border-slate-800 pt-12">
+           <p className="text-sm text-slate-600 mb-6 uppercase tracking-wider">Integrates seamlessly with your favorite tools</p>
+           <div className="flex flex-wrap justify-center gap-8 sm:gap-12 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
+             {['Stripe', 'Zapier', 'Slack', 'Hubspot', 'Notion'].map(tech => (
+                <span key={tech} className="text-xl font-bold text-white tracking-tight">{tech}</span>
+             ))}
+           </div>
+        </div>
+
+
+
+      </section>
+
+      {/* PROBLEM */}
+      <section className="relative z-10 border-t border-slate-800/60">
+        <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-28">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
+              The real problem
+            </span>
+
+            <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+              You may not need more leads.
+              <span className="block text-slate-500">
+                You may need to handle the ones you already get.
               </span>
-            )}
-          </button>
-        </nav>
+            </h2>
 
-        {/* Mobile navigation */}
-        {mobileMenuOpen && (
-          <div className="border-t border-slate-200 bg-white px-5 pb-6 lg:hidden">
-            <div className="mx-auto flex w-full max-w-[1600px] flex-col">
-              <a
-                href="#what-we-do"
-                onClick={closeMobileMenu}
-                className="border-b border-slate-200 py-4 text-base font-medium text-slate-800 transition-colors hover:text-slate-950"
-              >
-                What We Do
-              </a>
-              <a
-                href="#how-it-works"
-                onClick={closeMobileMenu}
-                className="border-b border-slate-200 py-4 text-base font-medium text-slate-800 transition-colors hover:text-slate-950"
-              >
-                How It Works
-              </a>
-              <a
-                href="#reviews"
-                onClick={closeMobileMenu}
-                className="border-b border-slate-200 py-4 text-base font-medium text-slate-800 transition-colors hover:text-slate-950"
-              >
-                Reviews
-              </a>
-              <a
-                href="#contact"
-                onClick={closeMobileMenu}
-                className="border-b border-slate-200 py-4 text-base font-medium text-slate-800 transition-colors hover:text-slate-950"
-              >
-                Contact
-              </a>
-              <div className="mt-5 flex flex-col gap-3">
-                <a
-                  href="/bookingcall"
-                  onClick={closeMobileMenu}
-                  className="flex h-12 items-center justify-center rounded-full bg-[#1473FF] text-sm font-semibold text-white transition-colors hover:bg-[#0867E8]"
-                >
-                  Book Call
-                </a>
-              </div>
-            </div>
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-400 sm:text-lg">
+              A lead that doesn't get a response quickly can become someone
+              else's customer. We build the systems that close those gaps.
+            </p>
           </div>
-        )}
-      </header>
 
-      {/* =========================================================
-          HERO
-      ========================================================= */}
-      <section className="relative overflow-hidden bg-slate-50">
+          <div className="mt-16 grid gap-6 md:grid-cols-3">
+            <ProblemCard
+              number="01"
+              icon={<PhoneCall className="h-5 w-5" />}
+              title="You miss the call"
+              description="You're on a roof, driving, with a customer, or simply too busy to answer."
+            />
 
-        {/* Background glow */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-blue-100/40 blur-3xl"
-        />
+            <ProblemCard
+              number="02"
+              icon={<Clock className="h-5 w-5" />}
+              title="Follow-up happens too late"
+              description="The prospect moves on while the lead sits in your inbox or voicemail."
+            />
 
-        <div className="relative mx-auto max-w-7xl px-5 pb-16 pt-16 sm:px-6 sm:pb-20 sm:pt-20 lg:px-8 lg:pb-24 lg:pt-28">
+            <ProblemCard
+              number="03"
+              icon={<TrendingUp className="h-5 w-5" />}
+              title="Good opportunities disappear"
+              description="You paid to generate the lead, but never got the chance to turn it into a job."
+            />
+          </div>
+        </div>
+      </section>
 
-          {/* CENTERED HERO */}
-          <div className="mx-auto max-w-5xl text-center">
+      {/* SYSTEM */}
+      <section
+        id="system"
+        className="relative z-10 border-t border-slate-800/60"
+      >
+        <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-32">
+          <div className="mb-16 max-w-3xl">
+            <span className="inline-flex rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
+              The Lead → Job System
+            </span>
 
-            {/* HEADLINE */}
-            <h1 className="mt-7 text-[3.1rem] font-black leading-[0.96] tracking-[-0.055em] text-slate-950 sm:text-6xl lg:text-[5.7rem]">
-              Website Design &
-              <span className="block text-blue-600">Lead Follow-Up</span>
-              Systems for Contractors
-            </h1>
+            <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+              Everything your contractor business needs to{" "}
+              <span className="text-blue-400">capture and convert</span>{" "}
+              more opportunities.
+            </h2>
 
-            {/* INTRO */}
-            <div className="mx-auto mt-7 max-w-2xl">
-              <p className="text-base font-bold leading-7 text-slate-900 sm:text-lg">
-                You do not need more marketing. You need fewer leads falling
-                through the cracks.
-              </p>
-              <p className="mt-3 text-sm leading-7 text-slate-500 sm:text-base">
-                We build conversion websites and automated follow-up systems
-                that help you respond faster, stay consistent, and close more
-                inquiries while you are on the job.
-              </p>
-            </div>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-slate-400 sm:text-lg">
+              Instead of stitching together a bunch of disconnected tools, we
+              connect the important pieces into one simple system.
+            </p>
+          </div>
 
-            {/* SOCIAL PROOF */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-
-              {/* AVATARS */}
-              <div className="flex items-center" aria-hidden="true">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-slate-950 text-[9px] font-black text-white shadow-sm">
-                  JD
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {systems.map((system, index) => (
+              <div
+                key={index}
+                className="group relative rounded-3xl border border-slate-800 bg-slate-900/40 p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/40 hover:bg-slate-900/70"
+              >
+                <div className="mb-7 inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 transition-colors group-hover:bg-blue-500/15">
+                  {system.icon}
                 </div>
-                <div className="-ml-2 flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-blue-600 text-[9px] font-black text-white shadow-sm">
-                  MK
-                </div>
-                <div className="-ml-2 flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-blue-600 text-[9px] font-black text-white shadow-sm">
-                  AR
-                </div>
-                <div className="-ml-2 flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-blue-600 text-[9px] font-black text-white shadow-sm">
-                  TS
+
+                <h3 className="text-xl font-bold tracking-tight text-white">
+                  {system.title}
+                </h3>
+
+                <p className="mt-3 text-sm leading-6 text-slate-400">
+                  {system.description}
+                </p>
+
+                <div className="mt-7 h-px w-full bg-slate-800" />
+
+                <div className="mt-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-600">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                  Part of your system
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-              <div className="hidden h-6 w-px bg-slate-200 sm:block" aria-hidden="true" />
+      {/* FLOW */}
+      <section className="relative z-10 border-t border-slate-800/60 bg-[#07100f]">
+        <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-32">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
+              What happens when a lead comes in?
+            </span>
 
-              {/* RATING */}
-              <div className="flex items-center gap-1" aria-hidden="true">
-                <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-              </div>
+            <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+              From{" "}
+              <span className="text-slate-500">“someone contacted us”</span>{" "}
+              to{" "}
+              <span className="text-blue-400">“we booked the job.”</span>
+            </h2>
+          </div>
 
-              <p className="text-sm font-bold text-slate-900">
-                4.9/5{" "}
-                <span className="font-semibold text-slate-500">
-                  from active contractors
+          <div className="mt-16 grid gap-4 md:grid-cols-4">
+            <FlowStep
+              number="01"
+              title="Lead arrives"
+              description="A prospect calls, fills out your form, or starts a conversation."
+              icon={<Target className="h-5 w-5" />}
+            />
+
+            <FlowStep
+              number="02"
+              title="Instant response"
+              description="Your system responds quickly so the opportunity doesn't sit unanswered."
+              icon={<MessageSquare className="h-5 w-5" />}
+            />
+
+            <FlowStep
+              number="03"
+              title="Follow-up"
+              description="The conversation keeps moving until the prospect takes the next step."
+              icon={<Workflow className="h-5 w-5" />}
+            />
+
+            <FlowStep
+              number="04"
+              title="Appointment"
+              description="The right prospects are guided toward a call, estimate, or appointment."
+              icon={<CalendarCheck className="h-5 w-5" />}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section
+        id="how-it-works"
+        className="relative z-10 border-t border-slate-800/60"
+      >
+        <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-32">
+          <div className="text-center">
+            <span className="inline-flex rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
+              How it works
+            </span>
+
+            <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+              Simple from day one.
+            </h2>
+
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-400 sm:text-lg">
+              You run the business. We handle the system.
+            </p>
+          </div>
+
+          <div className="mx-auto mt-16 grid max-w-5xl gap-6 md:grid-cols-3">
+            <ProcessCard
+              number="01"
+              icon={<PhoneCall className="h-6 w-6" />}
+              title="Book a Call"
+              description="We'll look at how you're currently getting and handling leads."
+            />
+
+            <ProcessCard
+              number="02"
+              icon={<Zap className="h-6 w-6" />}
+              title="We Build"
+              description="We put the right website, follow-up, booking, and automation pieces together."
+            />
+
+            <ProcessCard
+              number="03"
+              icon={<BarChart3 className="h-6 w-6" />}
+              title="Go Live"
+              description="Your system starts working in the background while you focus on your jobs."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* DARK STATEMENT */}
+      <section className="relative z-10 border-y border-slate-800/60 bg-[#050b0a]">
+        <div className="mx-auto max-w-6xl px-6 py-24 text-center lg:py-32">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-400">
+            One system
+          </p>
+
+          <h2 className="mt-6 text-5xl font-extrabold leading-none tracking-[-0.05em] text-white sm:text-7xl lg:text-8xl">
+            LEAD.
+            <br />
+            <span className="text-blue-400">FOLLOW UP.</span>
+            <br />
+            BOOK.
+          </h2>
+
+          <p className="mx-auto mt-8 max-w-xl text-base leading-7 text-slate-500 sm:text-lg">
+            Your marketing shouldn't stop when someone fills out a form or
+            calls your business.
+          </p>
+        </div>
+      </section>
+
+      {/* WHY US */}
+      <section className="relative z-10 border-b border-slate-800/60">
+        <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-32">
+          <div className="grid gap-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div>
+              <span className="inline-flex rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
+                Why Book More Leads
+              </span>
+
+              <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+                No complicated marketing lecture.
+                <span className="block text-slate-500">
+                  Just a system built around your business.
                 </span>
-              </p>
-            </div>
+              </h2>
 
-            {/* BUTTONS */}
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <p className="mt-6 max-w-xl text-base leading-7 text-slate-400">
+                Contractors don't need another dashboard to babysit. They need
+                a simple system that helps turn opportunities into actual
+                conversations and jobs.
+              </p>
+
               <a
                 href="/bookingcall"
-                className="group flex w-full items-center justify-center gap-2 rounded-full bg-blue-600 px-7 py-4 text-xs font-extrabold uppercase tracking-wider text-white shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg sm:w-auto"
+                className="group mt-8 inline-flex items-center gap-2 text-sm font-bold text-blue-400 transition-colors hover:text-blue-300"
               >
-                Book a Strategy Call
-                <Phone className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-              </a>
-              <a
-                href="#what-we-do"
-                className="group flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-7 py-4 text-xs font-extrabold uppercase tracking-wider text-slate-900 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md sm:w-auto"
-              >
-                What We Do
-                <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                See what your system could look like
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </a>
             </div>
 
-            {/* TRUST ITEMS */}
-            <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3">
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
-                <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                Built for contractors
-              </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
-                <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                Fast setup
-              </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
-                <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                24/7 lead automation
-              </div>
-            </div>
-          </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Reason
+                icon={<ShieldCheck className="h-5 w-5" />}
+                title="Done for you"
+                description="We handle the setup instead of handing you another software project."
+              />
 
-          {/* SMALL PROOF CARDS */}
-          <div className="mx-auto mt-14 grid max-w-4xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm sm:grid-cols-3">
-            <div className="border-b border-slate-200 px-6 py-6 text-center sm:border-b-0 sm:border-r">
-              <p className="text-xl font-black text-slate-950">24/7</p>
-              <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                Lead Response
-              </p>
-            </div>
-            <div className="border-b border-slate-200 px-6 py-6 text-center sm:border-b-0 sm:border-r">
-              <p className="text-xl font-black text-slate-950">7-10 Days</p>
-              <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                Typical Setup
-              </p>
-            </div>
-            <div className="px-6 py-6 text-center">
-              <p className="text-xl font-black text-slate-950">One System</p>
-              <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                Website + Follow-Up
-              </p>
+              <Reason
+                icon={<Workflow className="h-5 w-5" />}
+                title="One connected system"
+                description="Your website, follow-up, booking, and reviews work together."
+              />
+
+              <Reason
+                icon={<Clock className="h-5 w-5" />}
+                title="Built for busy owners"
+                description="The system works in the background while you handle the actual jobs."
+              />
+
+              <Reason
+                icon={<TrendingUp className="h-5 w-5" />}
+                title="Focused on conversion"
+                description="Every part is designed around moving prospects toward the next step."
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* =========================================================
-          WHAT WE DO
-      ========================================================= */}
+      {/* INDUSTRIES */}
       <section
-        id="what-we-do"
-        className="scroll-mt-24 bg-slate-950 py-16 text-white sm:py-20 lg:py-24"
+        id="industries"
+        className="relative z-10 border-b border-slate-800/60"
       >
-        <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6 py-24 text-center lg:px-8 lg:py-28">
+          <span className="inline-flex rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
+            Built for home services
+          </span>
 
-          {/* CENTERED HEADER */}
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-blue-400">
-              What We Do
-            </p>
-            <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] sm:text-4xl lg:text-5xl">
-              Engineered to turn traffic
-              <span className="block">into paying jobs.</span>
+          <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+            If you run the jobs,{" "}
+            <span className="text-blue-400">we can build the system.</span>
+          </h2>
+
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-400 sm:text-lg">
+            Built around the way local contractors actually get customers.
+          </p>
+
+          <div className="mx-auto mt-12 flex max-w-4xl flex-wrap justify-center gap-3">
+            {industries.map((industry) => (
+              <div
+                key={industry}
+                className="rounded-full border border-slate-800 bg-slate-900/40 px-5 py-3 text-sm font-medium text-slate-300 transition hover:border-blue-500/30 hover:text-white"
+              >
+                {industry}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="relative z-10 overflow-hidden">
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/15 blur-[120px]" />
+
+        <div className="relative mx-auto max-w-5xl px-6 py-28 text-center lg:py-36">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-400">
+            Ready to fix the leaks?
+          </p>
+
+          <h2 className="mt-5 text-4xl font-extrabold tracking-[-0.04em] text-white sm:text-6xl">
+            Stop letting good leads
+            <span className="block text-blue-400">go cold.</span>
+          </h2>
+
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-slate-400 sm:text-lg">
+            Let's look at how you're currently handling leads and find the
+            opportunities you're missing.
+          </p>
+
+
+ {/* CTA */}
+        <div className="relative mt-10">
+          {/* Glow */}
+          <div className="pointer-events-none absolute -inset-5 rounded-full bg-blue-600/25 blur-2xl" />
+
+          <a
+             href="/callbooking"
+            className="group relative inline-flex items-center gap-3 rounded-full bg-blue-600 px-8 py-4 text-base font-bold text-white shadow-2xl shadow-blue-950/50 transition-all hover:-translate-y-0.5 hover:bg-blue-500 sm:px-10 sm:py-4.5"
+          >
+            {/* Facepile */}
+            {/* Overlapping Avatar Group */}
+    <div className="flex items-center -space-x-2">
+      <img
+        src="https://i.pravatar.cc/80?img=12"
+        alt=""
+        className="h-7 w-7 rounded-full border-2 border-[#2563EB] object-cover"
+      />
+      <img
+        src="https://i.pravatar.cc/80?img=32"
+        alt=""
+        className="h-7 w-7 rounded-full border-2 border-[#2563EB] object-cover"
+      />
+      <img
+        src="https://i.pravatar.cc/80?img=47"
+        alt=""
+        className="h-7 w-7 rounded-full border-2 border-[#2563EB] object-cover"
+      />
+    </div>
+
+            <span>Book a Free Strategy Call</span>
+
+            <ArrowRight
+              className="h-5 w-5 transition-transform group-hover:translate-x-1"
+            />
+          </a>
+        </div>
+
+          
+
+
+
+
+
+
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section
+        id="faq"
+        className="relative z-10 border-t border-slate-800/60"
+      >
+        <div className="mx-auto max-w-4xl px-6 py-24 lg:py-28">
+          <div className="text-center">
+            <span className="inline-flex rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
+              FAQ
+            </span>
+
+            <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+              Questions? We've got answers.
             </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
-              We build the digital system behind your contracting business so
-              you can focus on the actual work instead of chasing every new
-              inquiry.
-            </p>
           </div>
 
-          {/* CENTERED 2 × 2 SERVICE GRID */}
-          <div className="mx-auto mt-12 grid max-w-4xl grid-cols-1 gap-5 sm:grid-cols-2">
-            {services.map((service) => {
-              const Icon = service.icon;
+          <div className="mt-14 divide-y divide-slate-800 border-y border-slate-800">
+            {faqs.map((faq, index) => {
+              const isOpen = openFaq === index;
 
               return (
-                <div
-                  key={service.number}
-                  className="group flex min-h-[250px] flex-col rounded-2xl border border-slate-800 bg-slate-900 p-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/50 hover:bg-slate-800"
-                >
-                  {/* ICON */}
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600/10">
-                    <Icon className="h-5 w-5 text-blue-400" />
+                <div key={index}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : index)}
+                    className="flex w-full items-center justify-between gap-6 py-6 text-left"
+                  >
+                    <span className="text-base font-semibold text-white sm:text-lg">
+                      {faq.question}
+                    </span>
+
+                    <ChevronDown
+                      className={`h-5 w-5 shrink-0 text-slate-500 transition-transform ${
+                        isOpen ? "rotate-180 text-blue-400" : ""
+                      }`}
+                    />
+                  </button>
+
+                  <div
+                    className={`grid transition-all duration-300 ${
+                      isOpen
+                        ? "grid-rows-[1fr] pb-6"
+                        : "grid-rows-[0fr]"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="max-w-3xl text-sm leading-7 text-slate-400">
+                        {faq.answer}
+                      </p>
+                    </div>
                   </div>
-
-                  {/* NUMBER */}
-                  <p className="mt-5 text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-600">
-                    {service.number}
-                  </p>
-
-                  {/* TITLE */}
-                  <h3 className="mt-2 text-lg font-bold text-white">
-                    {service.title}
-                  </h3>
-
-                  {/* DESCRIPTION */}
-                  <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-slate-400">
-                    {service.description}
-                  </p>
                 </div>
               );
             })}
@@ -470,304 +688,168 @@ export default function Home() {
         </div>
       </section>
 
-      {/* =========================================================
-          HOW IT WORKS
-      ========================================================= */}
-      <section
-  id="how-it-works"
-  className="bg-white py-16 sm:py-20 lg:py-24"
->
-  <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      {/* FOOTER */}
+      <footer className="relative z-10 border-t border-slate-800/60">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 sm:flex-row sm:items-center sm:justify-between lg:px-8">
+          <div>
+            <a href="/" className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
+                <ArrowUpRight className="h-4 w-4 text-white" />
+              </div>
 
-    {/* HEADING */}
-    <div className="text-center">
-      <h2 className="text-4xl font-black tracking-[-0.04em] text-slate-950 sm:text-5xl lg:text-[52px]">
-        ⏱️ Setup Your System in 3 Easy Steps:
-      </h2>
-    </div>
+              <div className="text-sm font-extrabold tracking-tight text-white">
+                BOOK MORE <span className="text-blue-400">LEADS</span>
+              </div>
+            </a>
 
-    {/* THREE STEPS */}
-    <div className="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-16 md:grid-cols-3 md:gap-8 lg:mt-20">
-
-      {/* STEP 1 */}
-      <div className="relative text-center">
-
-        {/* NUMBER */}
-        <div className="absolute left-1/2 top-[-22px] z-20 flex h-16 w-16 -translate-x-[125px] items-center justify-center rounded-full bg-blue-500 text-3xl font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.30)]">
-          1
-        </div>
-
-        {/* IMAGE BOX */}
-        <div className="mx-auto flex h-[220px] w-[220px] items-center justify-center overflow-hidden rounded-[28px] bg-[#f1f1f1] shadow-[0_10px_15px_rgba(0,0,0,0.12)] sm:h-[230px] sm:w-[230px]">
-          <img
-            src="/how-it-works/step-1.png"
-            alt="Step 1"
-            className="h-full w-full object-contain"
-          />
-        </div>
-
-        {/* TITLE */}
-        <h3 className="mx-auto mt-14 max-w-[360px] text-2xl font-black leading-[1.15] tracking-[-0.025em] text-slate-950 sm:text-[28px]">
-          Step 1: Get your system
-        </h3>
-
-        {/* DESCRIPTION */}
-        <p className="mx-auto mt-5 max-w-[360px] text-[17px] leading-8 tracking-[0.01em] text-slate-700">
-          We set everything up for your business.
-        </p>
-      </div>
-
-
-      {/* STEP 2 */}
-      <div className="relative text-center">
-
-        {/* NUMBER */}
-        <div className="absolute left-1/2 top-[-22px] z-20 flex h-16 w-16 -translate-x-[125px] items-center justify-center rounded-full bg-blue-500 text-3xl font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.30)]">
-          2
-        </div>
-
-        {/* IMAGE BOX */}
-        <div className="mx-auto flex h-[220px] w-[220px] items-center justify-center overflow-hidden rounded-[28px] bg-[#f1f1f1] shadow-[0_10px_15px_rgba(0,0,0,0.12)] sm:h-[230px] sm:w-[230px]">
-          <img
-            src="/how-it-works/step-2.png"
-            alt="Step 2"
-            className="h-full w-full object-contain"
-          />
-        </div>
-
-        {/* TITLE */}
-        <h3 className="mx-auto mt-14 max-w-[360px] text-2xl font-black leading-[1.15] tracking-[-0.025em] text-slate-950 sm:text-[28px]">
-          Step 2: Connect your leads
-        </h3>
-
-        {/* DESCRIPTION */}
-        <p className="mx-auto mt-5 max-w-[360px] text-[17px] leading-8 tracking-[0.01em] text-slate-700">
-          Your leads flow directly into your system.
-        </p>
-      </div>
-
-
-      {/* STEP 3 */}
-      <div className="relative text-center">
-
-        {/* NUMBER */}
-        <div className="absolute left-1/2 top-[-22px] z-20 flex h-16 w-16 -translate-x-[125px] items-center justify-center rounded-full bg-blue-500 text-3xl font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.30)]">
-          3
-        </div>
-
-        {/* IMAGE BOX */}
-        <div className="mx-auto flex h-[220px] w-[220px] items-center justify-center overflow-hidden rounded-[28px] bg-[#f1f1f1] shadow-[0_10px_15px_rgba(0,0,0,0.12)] sm:h-[230px] sm:w-[230px]">
-          <img
-            src="/how-it-works/step-3.png"
-            alt="Step 3"
-            className="h-full w-full object-contain"
-          />
-        </div>
-
-        {/* TITLE */}
-        <h3 className="mx-auto mt-14 max-w-[360px] text-2xl font-black leading-[1.15] tracking-[-0.025em] text-slate-950 sm:text-[28px]">
-          Step 3: Let AI do the work
-        </h3>
-
-        {/* DESCRIPTION */}
-        <p className="mx-auto mt-5 max-w-[360px] text-[17px] leading-8 tracking-[0.01em] text-slate-700">
-          Your business is now ready to capture and follow up with leads.
-        </p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-      {/* =========================================================
-          REVIEWS
-      ========================================================= */}
-      <section
-        id="reviews"
-        className="scroll-mt-24 overflow-hidden border-y border-slate-200 bg-blue-50 py-16 sm:py-20"
-      >
-        <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-
-          {/* CENTERED HEADER */}
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-blue-600">
-              Reviews
+            <p className="mt-3 text-xs text-slate-600">
+              The Lead → Job System for Contractors.
             </p>
-            <h2 className="mt-2 text-3xl font-black tracking-[-0.035em] text-slate-950 sm:text-4xl">
-              What contractors say
-            </h2>
-            <div className="mt-4 flex items-center justify-center gap-2 text-xs font-semibold text-slate-500">
-              <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-              <span>4.9/5 average rating</span>
-            </div>
           </div>
 
-          {/* INFINITE SLIDING REVIEWS */}
-          <div className="relative mx-auto mt-10 w-full overflow-hidden">
-            <div className="flex w-max animate-review-scroll gap-5">
+          <div className="flex flex-wrap items-center gap-6 text-xs font-medium text-slate-500">
+            <a href="#system" className="hover:text-white">
+              System
+            </a>
 
-              {/* FIRST SET */}
-              {reviews.map((review, index) => (
-                <ReviewCard key={`review-${index}`} review={review} />
-              ))}
+            <a href="#how-it-works" className="hover:text-white">
+              How It Works
+            </a>
 
-              {/* DUPLICATE SET FOR SEAMLESS LOOP */}
-              {reviews.map((review, index) => (
-                <ReviewCard key={`review-dup-${index}`} review={review} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+            <a href="#faq" className="hover:text-white">
+              FAQ
+            </a>
 
-      {/* =========================================================
-          FINAL CTA
-      ========================================================= */}
-      <section
-        id="contact"
-        className="relative scroll-mt-24 overflow-hidden bg-white py-20 sm:py-24"
-      >
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-0 h-96 w-[700px] -translate-x-1/2 rounded-full bg-blue-100/40 blur-3xl"
-        />
-
-        <div className="relative mx-auto max-w-4xl px-5 text-center sm:px-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-[10px] font-extrabold uppercase tracking-[0.14em] text-blue-600">
-            <Zap className="h-3.5 w-3.5" />
-            Stop Losing Leads
-          </div>
-
-          <h2 className="mt-6 text-3xl font-black tracking-[-0.04em] text-slate-950 sm:text-4xl lg:text-5xl">
-            Your next lead should not have to wait for you.
-          </h2>
-
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-500 sm:text-base">
-            Build a website and follow-up system that keeps working while you
-            are busy running the actual business.
-          </p>
-
-          <div className="mt-8">
             <a
-              href="/bookingcall"
-              className="group inline-flex items-center gap-2 rounded-full bg-blue-600 px-7 py-4 text-xs font-extrabold uppercase tracking-wider text-white shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg"
+              href="/callbooking"
+              className="inline-flex items-center gap-1.5 text-blue-400 hover:text-blue-300"
             >
-              Book a Strategy Call
-              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+              Book a Call
+              <ArrowUpRight className="h-3.5 w-3.5" />
             </a>
           </div>
         </div>
-      </section>
 
-      {/* =========================================================
-          FOOTER
-      ========================================================= */}
-      <footer className="border-t border-slate-200 bg-white py-7">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-5 sm:flex-row sm:px-6 lg:px-8">
-          <a href="/" aria-label="Home" className="flex items-center">
-            <img
-              src="/2.svg"
-              alt="Logo"
-              className="block h-auto w-[120px] object-contain sm:w-[135px]"
-            />
-          </a>
-          <p className="text-xs font-medium text-slate-400">
-            © {new Date().getFullYear()} All rights reserved.
-          </p>
+        <div className="border-t border-slate-900 px-6 py-5 text-center text-[11px] text-slate-700">
+          © {new Date().getFullYear()} Book More Leads. All rights reserved.
         </div>
       </footer>
 
-      {/* =========================================================
-          CHAT PANEL
-      ========================================================= */}
-      {chatOpen && (
-        <div className="fixed bottom-20 right-5 z-50 w-[calc(100vw-40px)] max-w-[340px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3.5">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50">
-                <MessageSquare className="h-4 w-4 text-blue-600" />
-              </div>
-              <span className="text-xs font-bold text-slate-900">
-                Have questions?
-              </span>
-            </div>
-            <button
-              type="button"
-              aria-label="Close chat"
-              onClick={() => setChatOpen(false)}
-              className="flex h-7 w-7 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
 
-          <div className="p-4">
-            <p className="text-sm leading-6 text-slate-500">
-              Need help growing your contractor business? Book a call and let
-              us talk about your current website and lead flow.
-            </p>
-            <a
-              href="/bookingcall"
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-xs font-bold text-white transition-colors hover:bg-blue-700"
-            >
-              Book Call
-              <ArrowUpRight className="h-4 w-4" />
-            </a>
-          </div>
-        </div>
-      )}
-
-      {/* =========================================================
-          CHAT BUTTON
-      ========================================================= */}
-      <button
-        type="button"
-        aria-label={chatOpen ? "Close chat" : "Open chat"}
-        aria-expanded={chatOpen}
-        onClick={() => setChatOpen(!chatOpen)}
-        className="fixed bottom-5 right-5 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/30 transition-all duration-200 hover:scale-105 hover:bg-blue-700"
-      >
-        {chatOpen ? (
-          <X className="h-5 w-5" />
-        ) : (
-          <MessageSquare className="h-5 w-5" />
-        )}
-      </button>
-
-      {/* =========================================================
-          ANIMATIONS (plain style tag — works in Next.js AND Vite/CRA)
-      ========================================================= */}
-      <style>{`
-        @keyframes review-scroll {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(calc(-50% - 10px));
-          }
-        }
-
-        .animate-review-scroll {
-          animation: review-scroll 28s linear infinite;
-          will-change: transform;
-        }
-
-        .animate-review-scroll:hover {
-          animation-play-state: paused;
-        }
-
-        @media (max-width: 1023px) {
-          .animate-review-scroll {
-            animation-duration: 32s;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .animate-review-scroll {
-            animation: none;
-          }
-        }
-      `}</style>
     </main>
+  );
+}
+
+/* -------------------------------------------------------
+   COMPONENTS
+------------------------------------------------------- */
+
+function ProblemCard({
+  number,
+  icon,
+  title,
+  description,
+}: {
+  number: string;
+  icon: ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="rounded-3xl border border-slate-800 bg-slate-900/30 p-7">
+      <div className="flex items-center justify-between">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-blue-500/20 bg-blue-500/10 text-blue-400">
+          {icon}
+        </div>
+
+        <span className="text-xs font-bold tracking-[0.2em] text-slate-700">
+          {number}
+        </span>
+      </div>
+
+      <h3 className="mt-8 text-xl font-bold text-white">{title}</h3>
+
+      <p className="mt-3 text-sm leading-6 text-slate-500">{description}</p>
+    </div>
+  );
+}
+
+function FlowStep({
+  number,
+  title,
+  description,
+  icon,
+}: {
+  number: string;
+  title: string;
+  description: string;
+  icon: ReactNode;
+}) {
+  return (
+    <div className="relative rounded-3xl border border-slate-800 bg-slate-900/30 p-7">
+      <div className="flex items-center justify-between">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
+          {icon}
+        </div>
+
+        <span className="text-xs font-bold tracking-[0.2em] text-slate-700">
+          {number}
+        </span>
+      </div>
+
+      <h3 className="mt-7 font-bold text-white">{title}</h3>
+
+      <p className="mt-3 text-sm leading-6 text-slate-500">{description}</p>
+    </div>
+  );
+}
+
+function ProcessCard({
+  number,
+  icon,
+  title,
+  description,
+}: {
+  number: string;
+  icon: ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="rounded-3xl border border-slate-800 bg-slate-900/30 p-8 text-center transition hover:border-blue-500/30">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 text-blue-400">
+        {icon}
+      </div>
+
+      <div className="mt-6 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-400">
+        Step {number}
+      </div>
+
+      <h3 className="mt-3 text-xl font-bold text-white">{title}</h3>
+
+      <p className="mt-3 text-sm leading-6 text-slate-500">{description}</p>
+    </div>
+  );
+}
+
+function Reason({
+  icon,
+  title,
+  description,
+}: {
+  icon: ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="rounded-3xl border border-slate-800 bg-slate-900/30 p-7">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
+        {icon}
+      </div>
+
+      <h3 className="mt-6 font-bold text-white">{title}</h3>
+
+      <p className="mt-2 text-sm leading-6 text-slate-500">{description}</p>
+    </div>
   );
 }
