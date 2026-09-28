@@ -1,3 +1,11 @@
+
+// @ts-nocheck
+Deno.serve(async (req) => {
+  // ... rest of your code
+})
+
+
+
 Deno.serve(async (req) => {
   try {
     const lead = await req.json();
