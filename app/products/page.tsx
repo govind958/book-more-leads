@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -177,50 +179,7 @@ export default function ProductsPage() {
 
       {/* NAVBAR */}
 
-      <nav className="relative z-30 mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-8">
-        <a href="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 shadow-lg shadow-blue-600/20">
-            <ArrowUpRight className="h-5 w-5 text-white" />
-          </div>
-
-          <div className="leading-none">
-            <div className="text-[15px] font-extrabold tracking-tight text-white">
-              BOOK MORE{" "}
-              <span className="text-blue-400">LEADS</span>
-            </div>
-
-            <div className="mt-1 text-[9px] font-medium uppercase tracking-[0.18em] text-slate-500">
-              Lead → Job System
-            </div>
-          </div>
-        </a>
-
-        <div className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex">
-          <a
-            href="/products"
-            className="text-white transition-colors"
-          >
-            Products
-          </a>
-
-          <a
-            href="/price"
-            className="transition-colors hover:text-white"
-          >
-            Price
-          </a>
-
-          
-        </div>
-
-        <a
-          href="/callbooking"
-          className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-500"
-        >
-          Book a Call
-          <ArrowRight className="h-4 w-4" />
-        </a>
-      </nav>
+      <Navbar />
 
       {/* SYSTEM */}
 
@@ -534,61 +493,7 @@ export default function ProductsPage() {
 
       {/* FOOTER */}
 
-      <footer className="relative z-10 border-t border-slate-800/60">
-        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 sm:flex-row sm:items-center sm:justify-between lg:px-8">
-          <div>
-            <a href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
-                <ArrowUpRight className="h-4 w-4 text-white" />
-              </div>
-
-              <div className="text-sm font-extrabold tracking-tight text-white">
-                BOOK MORE{" "}
-                <span className="text-blue-400">LEADS</span>
-              </div>
-            </a>
-
-            <p className="mt-3 text-xs text-slate-600">
-              The Lead → Job System for Contractors.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-6 text-xs font-medium text-slate-500">
-            <a
-              href="#system"
-              className="transition-colors hover:text-white"
-            >
-              System
-            </a>
-
-            <a
-              href="/#how-it-works"
-              className="transition-colors hover:text-white"
-            >
-              How It Works
-            </a>
-
-            <a
-              href="#faq"
-              className="transition-colors hover:text-white"
-            >
-              FAQ
-            </a>
-
-            <a
-              href="/callbooking"
-              className="inline-flex items-center gap-1.5 text-blue-400 transition-colors hover:text-blue-300"
-            >
-              Book a Call
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </a>
-          </div>
-        </div>
-
-        <div className="border-t border-slate-900 px-6 py-5 text-center text-[11px] text-slate-700">
-          © {new Date().getFullYear()} Book More Leads. All rights reserved.
-        </div>
-      </footer>
+     <Footer />
     </main>
   );
 }

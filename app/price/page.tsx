@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
 
 import {
   ArrowRight,
@@ -23,83 +25,6 @@ export default function Pricing() {
   const monthlyPrice = 299;
   const yearlyPrice = monthlyPrice * 10;
   const yearlySavings = monthlyPrice * 12 - yearlyPrice;
-
-  const features = [
-    {
-      icon: <Globe className="h-5 w-5" />,
-      title: "High-Converting Website",
-      description:
-        "A professional contractor website designed to turn visitors into calls, messages, and quote requests.",
-      items: [
-        "Modern mobile-friendly website",
-        "Clear calls-to-action",
-        "Quote request forms",
-        "Click-to-call buttons",
-        "Lead-focused page structure",
-      ],
-    },
-    {
-      icon: <PhoneCall className="h-5 w-5" />,
-      title: "Missed-Call Textback",
-      description:
-        "When you can't answer the phone, your system can immediately follow up with the caller.",
-      items: [
-        "Automatic missed-call response",
-        "Instant text conversation",
-        "Lead notification",
-        "Never leave a caller wondering what happened",
-      ],
-    },
-    {
-      icon: <Workflow className="h-5 w-5" />,
-      title: "Automated Lead Follow-Up",
-      description:
-        "Keep new inquiries moving instead of letting them sit unanswered in your inbox.",
-      items: [
-        "Instant lead response",
-        "Automated follow-up messages",
-        "Conversation tracking",
-        "Follow-up sequences",
-        "Lead status management",
-      ],
-    },
-    {
-      icon: <CalendarCheck className="h-5 w-5" />,
-      title: "Appointment Booking",
-      description:
-        "Make it easy for qualified prospects to take the next step without endless back-and-forth.",
-      items: [
-        "Online appointment booking",
-        "Calendar integration",
-        "Booking confirmations",
-        "Automated reminders",
-      ],
-    },
-    {
-      icon: <Star className="h-5 w-5" />,
-      title: "Review Automation",
-      description:
-        "Make asking happy customers for reviews a consistent part of your process.",
-      items: [
-        "Automated review requests",
-        "Post-job follow-up",
-        "Google review link",
-        "Simple customer experience",
-      ],
-    },
-    {
-      icon: <Search className="h-5 w-5" />,
-      title: "Local Visibility",
-      description:
-        "Build the online foundation customers need when searching for a contractor in your area.",
-      items: [
-        "Local SEO foundations",
-        "Business profile optimization",
-        "On-page optimization",
-        "Local service positioning",
-      ],
-    },
-  ];
 
   const faqs = [
     {
@@ -152,53 +77,7 @@ export default function Pricing() {
       <div className="pointer-events-none absolute left-1/2 top-[-300px] h-[700px] w-[900px] -translate-x-1/2 rounded-full bg-blue-600/10 blur-[140px]" />
 
       {/* NAVBAR */}
-       {/* NAVBAR */}
-      <nav className="relative z-30 mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-8">
-        {/* Logo */}
-        <a href="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 shadow-lg shadow-blue-600/20">
-            <ArrowUpRight className="h-5 w-5 text-white" />
-          </div>
-
-          <div className="leading-none">
-            <div className="text-[15px] font-extrabold tracking-tight text-white">
-              BOOK MORE <span className="text-blue-400">LEADS</span>
-            </div>
-            <div className="mt-1 text-[9px] font-medium uppercase tracking-[0.18em] text-slate-500">
-              Lead → Job System
-            </div>
-          </div>
-        </a>
-
-        {/* Navigation */}
-        <div className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex">
-          <a
-            href="/products"
-            className="transition-colors hover:text-white"
-          >
-            Products
-          </a>
-
-          <a
-            href="/price"
-            className="transition-colors hover:text-white"
-          >
-            Price
-          </a>
-
-          
-        </div>
-
-        {/* CTA */}
-        <a
-          href="/callbooking"
-          className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-500"
-        >
-          Book a Call
-          <ArrowRight className="h-4 w-4" />
-        </a>
-      </nav>
-
+      <Navbar />
 
       {/* HERO */}
       <section className="relative z-10 mx-auto max-w-6xl px-5 pb-14 pt-16 text-center sm:px-6 sm:pb-16 sm:pt-24 md:pt-28 lg:pb-20 lg:pt-32">
@@ -214,7 +93,7 @@ export default function Pricing() {
             {/* Glow */}
             <div className="pointer-events-none absolute right-[-150px] top-[-150px] h-[400px] w-[400px] rounded-full bg-blue-600/15 blur-[120px]" />
 
-            {/* Popular label */}
+            {/* Label */}
             <div className="border-b border-blue-500/20 bg-blue-500/[0.06] px-5 py-3 text-center sm:px-6">
               <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-400 sm:text-[11px] sm:tracking-[0.22em]">
                 The Lead → Job System
@@ -261,6 +140,7 @@ export default function Pricing() {
                     }`}
                   >
                     Yearly
+
                     <span
                       className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide ${
                         billing === "yearly"
@@ -517,52 +397,8 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="relative z-10 border-t border-slate-800/60">
-        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-5 py-10 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-          <div>
-            <a href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
-                <ArrowUpRight className="h-4 w-4 text-white" />
-              </div>
-
-              <div className="text-sm font-extrabold tracking-tight text-white">
-                BOOK MORE <span className="text-blue-400">LEADS</span>
-              </div>
-            </a>
-
-            <p className="mt-3 text-xs text-slate-600">
-              The Lead → Job System for Contractors.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-medium text-slate-500">
-            <a href="/#system" className="hover:text-white">
-              System
-            </a>
-
-            <a href="/#how-it-works" className="hover:text-white">
-              How It Works
-            </a>
-
-            <a href="#faq" className="hover:text-white">
-              FAQ
-            </a>
-
-            <a
-              href="/bookingcall"
-              className="inline-flex items-center gap-1.5 text-blue-400 hover:text-blue-300"
-            >
-              Book a Call
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </a>
-          </div>
-        </div>
-
-        <div className="border-t border-slate-900 px-5 py-5 text-center text-[11px] text-slate-700 sm:px-6">
-          © {new Date().getFullYear()} Book More Leads. All rights reserved.
-        </div>
-      </footer>
+      {/* FOOTER COMPONENT */}
+      <Footer />
     </main>
   );
 }

@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
+import StrategyCallButton from "@/components/layout/ui/StrategyCallButton";
 
 import {
   ArrowRight,
@@ -121,51 +124,7 @@ export default function Home() {
       <div className="pointer-events-none absolute left-1/2 top-[-300px] h-[700px] w-[900px] -translate-x-1/2 rounded-full bg-blue-600/10 blur-[140px]" />
 
       {/* NAVBAR */}
-      <nav className="relative z-30 mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-8">
-        {/* Logo */}
-        <a href="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 shadow-lg shadow-blue-600/20">
-            <ArrowUpRight className="h-5 w-5 text-white" />
-          </div>
-
-          <div className="leading-none">
-            <div className="text-[15px] font-extrabold tracking-tight text-white">
-              BOOK MORE <span className="text-blue-400">LEADS</span>
-            </div>
-            <div className="mt-1 text-[9px] font-medium uppercase tracking-[0.18em] text-slate-500">
-              Lead → Job System
-            </div>
-          </div>
-        </a>
-
-        {/* Navigation */}
-        <div className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex">
-          <a
-            href="/products"
-            className="transition-colors hover:text-white"
-          >
-            Products
-          </a>
-
-          <a
-            href="/price"
-            className="transition-colors hover:text-white"
-          >
-            Price
-          </a>
-
-         
-        </div>
-
-        {/* CTA */}
-        <a
-          href="/callbooking"
-          className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-500"
-        >
-          Book a Call
-          <ArrowRight className="h-4 w-4" />
-        </a>
-      </nav>
+     <Navbar />
 
       {/* HERO */}
       <section className="relative z-10 mx-auto flex max-w-6xl flex-col items-center px-6 pb-24 pt-20 text-center sm:pt-28 lg:pb-32 lg:pt-32">
@@ -183,42 +142,11 @@ export default function Home() {
           work to your day.
         </p>
 
+
+
+
         {/* CTA */}
-        <div className="relative mt-10">
-          {/* Glow */}
-          <div className="pointer-events-none absolute -inset-5 rounded-full bg-blue-600/25 blur-2xl" />
-
-          <a
-             href="/callbooking"
-            className="group relative inline-flex items-center gap-3 rounded-full bg-blue-600 px-8 py-4 text-base font-bold text-white shadow-2xl shadow-blue-950/50 transition-all hover:-translate-y-0.5 hover:bg-blue-500 sm:px-10 sm:py-4.5"
-          >
-            {/* Facepile */}
-            {/* Overlapping Avatar Group */}
-    <div className="flex items-center -space-x-2">
-      <img
-        src="https://i.pravatar.cc/80?img=12"
-        alt=""
-        className="h-7 w-7 rounded-full border-2 border-[#2563EB] object-cover"
-      />
-      <img
-        src="https://i.pravatar.cc/80?img=32"
-        alt=""
-        className="h-7 w-7 rounded-full border-2 border-[#2563EB] object-cover"
-      />
-      <img
-        src="https://i.pravatar.cc/80?img=47"
-        alt=""
-        className="h-7 w-7 rounded-full border-2 border-[#2563EB] object-cover"
-      />
-    </div>
-
-            <span>Book a Free Strategy Call</span>
-
-            <ArrowRight
-              className="h-5 w-5 transition-transform group-hover:translate-x-1"
-            />
-          </a>
-        </div>
+       <StrategyCallButton />
 
         {/* CTA reassurance */}
         <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-slate-500">
@@ -584,42 +512,7 @@ export default function Home() {
 
 
  {/* CTA */}
-        <div className="relative mt-10">
-          {/* Glow */}
-          <div className="pointer-events-none absolute -inset-5 rounded-full bg-blue-600/25 blur-2xl" />
-
-          <a
-             href="/callbooking"
-            className="group relative inline-flex items-center gap-3 rounded-full bg-blue-600 px-8 py-4 text-base font-bold text-white shadow-2xl shadow-blue-950/50 transition-all hover:-translate-y-0.5 hover:bg-blue-500 sm:px-10 sm:py-4.5"
-          >
-            {/* Facepile */}
-            {/* Overlapping Avatar Group */}
-    <div className="flex items-center -space-x-2">
-      <img
-        src="https://i.pravatar.cc/80?img=12"
-        alt=""
-        className="h-7 w-7 rounded-full border-2 border-[#2563EB] object-cover"
-      />
-      <img
-        src="https://i.pravatar.cc/80?img=32"
-        alt=""
-        className="h-7 w-7 rounded-full border-2 border-[#2563EB] object-cover"
-      />
-      <img
-        src="https://i.pravatar.cc/80?img=47"
-        alt=""
-        className="h-7 w-7 rounded-full border-2 border-[#2563EB] object-cover"
-      />
-    </div>
-
-            <span>Book a Free Strategy Call</span>
-
-            <ArrowRight
-              className="h-5 w-5 transition-transform group-hover:translate-x-1"
-            />
-          </a>
-        </div>
-
+         <StrategyCallButton />
           
 
 
@@ -689,51 +582,8 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="relative z-10 border-t border-slate-800/60">
-        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 sm:flex-row sm:items-center sm:justify-between lg:px-8">
-          <div>
-            <a href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
-                <ArrowUpRight className="h-4 w-4 text-white" />
-              </div>
-
-              <div className="text-sm font-extrabold tracking-tight text-white">
-                BOOK MORE <span className="text-blue-400">LEADS</span>
-              </div>
-            </a>
-
-            <p className="mt-3 text-xs text-slate-600">
-              The Lead → Job System for Contractors.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-6 text-xs font-medium text-slate-500">
-            <a href="#system" className="hover:text-white">
-              System
-            </a>
-
-            <a href="#how-it-works" className="hover:text-white">
-              How It Works
-            </a>
-
-            <a href="#faq" className="hover:text-white">
-              FAQ
-            </a>
-
-            <a
-              href="/callbooking"
-              className="inline-flex items-center gap-1.5 text-blue-400 hover:text-blue-300"
-            >
-              Book a Call
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </a>
-          </div>
-        </div>
-
-        <div className="border-t border-slate-900 px-6 py-5 text-center text-[11px] text-slate-700">
-          © {new Date().getFullYear()} Book More Leads. All rights reserved.
-        </div>
-      </footer>
+      {/* FOOTER COMPONENT */}
+           <Footer />
 
 
     </main>
