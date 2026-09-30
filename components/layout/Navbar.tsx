@@ -16,6 +16,7 @@ export default function Navbar() {
   return (
     <nav className="relative z-30 mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
       <div className="flex items-center justify-between gap-3">
+
         {/* Logo */}
         <Link
           href="/"
@@ -61,7 +62,7 @@ export default function Navbar() {
 
         {/* Desktop CTA */}
         <Link
-          href="/callbooking"
+          href="/growth"
           className="hidden items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-500 md:inline-flex"
         >
           Book a Call

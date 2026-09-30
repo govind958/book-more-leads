@@ -26,17 +26,20 @@ Deno.serve(async (req) => {
       );
     }
 
-    const message = [
-      "🔥 *NEW LEAD — Book More Leads*",
-      "",
-      `👤 *Name:* ${lead.name || "N/A"}`,
-      `📧 *Email:* ${lead.email || "N/A"}`,
-      `📱 *Phone:* ${lead.phone || "N/A"}`,
-      `🏢 *Company:* ${lead.company || "N/A"}`,
-      `📍 *Source:* ${lead.source || "N/A"}`,
-      `📊 *Status:* ${lead.status || "N/A"}`,
-    ].join("\n");
-
+   const message = [
+  "🔥 *NEW LEAD — Book More Leads*",
+  "",
+  `👤 *Name:* ${lead.name || "N/A"}`,
+  `🏢 *Company:* ${lead.company || "N/A"}`,
+  `📱 *Phone:* ${lead.phone || "N/A"}`,
+  `📧 *Email:* ${lead.email || "N/A"}`,
+  "",
+  "📋 *Qualification*",
+  `🔧 ${lead.work_type || "N/A"}`,
+  `📈 ${lead.business_status || "N/A"}`,
+  `⏰ ${lead.timeframe || "N/A"}`,
+  `💰 ${lead.revenue || "N/A"}`,
+].join("\n");
     const response = await fetch(slackWebhookUrl, {
       method: "POST",
       headers: {
