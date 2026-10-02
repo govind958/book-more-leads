@@ -2,8 +2,18 @@
 
 import { useState, type ReactNode } from "react";
 import Footer from "@/components/layout/Footer";
+import SetupSteps from "@/components/layout/ui/HOWITWORKS";
+import PricingCard from "@/components/layout/ui/PricingCard";
+import SuccessStoriess from "@/components/layout/ui/SuccessStories";
+import TargetIndustries from "@/components/layout/ui/TargetIndustries";
+
+
 import Navbar from "@/components/layout/Navbar";
 import StrategyCallButton from "@/components/layout/ui/StrategyCallButton";
+import PlatformCompatibility from "@/components/layout/ui/PlatformCompatibility";
+import MoneyBackGuarantee from "@/components/layout/ui/MoneyBackGuarantee";
+
+
 
 import {
   BarChart3,
@@ -20,6 +30,10 @@ import {
   Repeat,
   DollarSign,
   CheckCircle2,
+  ArrowUpRight,
+  ArrowRight,
+  Phone,
+  MessageSquare,
 } from "lucide-react";
 
 export default function Home() {
@@ -155,229 +169,145 @@ export default function Home() {
       {/* NAVBAR */}
       <Navbar />
 
-      {/* HERO SECTION */}
-      <section className="relative z-10 mx-auto flex max-w-6xl flex-col items-center px-6 pb-20 pt-20 text-center sm:pt-28 lg:pb-28 lg:pt-32">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-blue-400">
-          <Zap className="h-3.5 w-3.5" /> Full Growth Stack For Contractors
+  {/* HERO SECTION */}
+
+{/* ================= HERO SECTION ================= */}
+{/*
+  HEADLINE A/B TEST OPTIONS:
+  A (current): "While You Run the Crew, We Book the Jobs" — outcome-first, best for cold traffic
+  B: "Every Missed Call Is a Job Going to Your Competitor" — pain-first, best for ads
+  C: "A Full Marketing Department for $297/Month. Zero Setup Fees." — offer-first, best for price shoppers
+*/}
+
+<section className="relative overflow-hidden border-b border-slate-800/60 bg-gradient-to-r from-[#0d1d2b] via-[#0f172a] to-[#1c1813] px-4 py-16 text-white sm:px-6 sm:py-24 lg:px-8 lg:py-28">
+
+  {/* Ambient Background Glow Effects */}
+  <div className="pointer-events-none absolute left-1/2 top-1/4 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-3xl sm:left-10 sm:h-96 sm:w-96 sm:translate-x-0 sm:translate-y-0" />
+  <div className="pointer-events-none absolute bottom-10 right-10 h-72 w-72 rounded-full bg-amber-500/10 blur-3xl sm:h-96 sm:w-96" />
+
+  <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center text-center">
+
+    {/* Top Pill / Badge — anchors the offer, kills the #1 objection (setup fees) */}
+    <div className="mb-6 inline-flex max-w-full items-center gap-2.5 rounded-full border border-slate-700/80 bg-slate-900/80 py-1.5 pl-1.5 pr-4 text-xs font-medium text-slate-300 shadow-sm backdrop-blur-md sm:mb-8">
+      <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-blue-500 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+        <Star className="h-2.5 w-2.5 fill-amber-300 text-amber-300" />
+        New
+      </span>
+      <span className="truncate">
+        $0 setup fee — everything live in 14 days
+      </span>
+    </div>
+
+    {/* Main Headline — outcome first, second line = what they actually buy */}
+    <h1 className="w-full max-w-4xl text-3xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+      While You Run the Crew,
+      <span className="mt-2 block font-serif text-4xl font-normal italic tracking-normal text-transparent bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text sm:mt-3 sm:text-5xl md:text-6xl lg:text-7xl">
+        We Book the Jobs
+      </span>
+    </h1>
+
+    {/* Subtitle — the full offer stack, framed as recovered revenue */}
+    <p className="mt-6 w-full max-w-2xl text-sm font-light leading-relaxed text-slate-300 sm:mt-8 sm:text-base md:text-lg">
+      Your complete done-for-you growth engine: 15–20 page SEO website,
+      automated 5-star review capture, missed-call text-back with AI follow-up,
+      and seasonal rebooking campaigns —{" "}
+      <strong className="font-semibold text-white">$297/month</strong>,{" "}
+      <strong className="font-semibold text-white">$0 setup</strong>,{" "}
+      no contracts.
+    </p>
+
+    
+
+    {/* CTA + Risk Reversal */}
+    <div className="mt-8 flex w-full flex-col items-center sm:mt-10">
+
+      {/* Main Strategy Call Button */}
+     {/* Main Pill CTA Button */}
+          <button
+  onClick={() => (window.location.href = "/growth")}
+  className="group flex items-center gap-3 rounded-full bg-blue-600 px-7 py-3.5 text-base font-semibold text-white shadow-md shadow-blue-900/40 transition-all hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-800/50"
+>
+  <span>BOOK A CALL</span>
+  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 text-white transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+    <ArrowUpRight className="h-4 w-4" />
+  </span>
+</button>
+      {/* Trust Line — kills every remaining objection in one glance */}
+      <p className="mt-4 text-xs font-medium tracking-wide text-slate-400">
+        No setup fees · Cancel anytime · Paid ads only if you want them later
+      </p>
+
+      {/* Social Proof */}
+      <div className="mt-6 flex w-full items-center justify-center gap-3.5 sm:mt-7">
+
+        {/* Avatar Stack */}
+        <div className="flex shrink-0 -space-x-2.5">
+          {[
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
+          ].map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              alt={`Client avatar ${i + 1}`}
+              className="h-9 w-9 rounded-full border-2 border-slate-900 object-cover ring-2 ring-slate-700/50 sm:h-10 sm:w-10"
+            />
+          ))}
         </div>
 
-        <h1 className="max-w-5xl text-5xl font-extrabold leading-[1.02] tracking-[-0.04em] text-white sm:text-6xl md:text-7xl lg:text-[80px]">
-          We Build The Marketing System. <br className="hidden sm:inline" />
-          <span className="text-blue-400">You Scale The Contracting Jobs.</span>
-        </h1>
-
-        <p className="mt-8 max-w-3xl text-base font-light leading-7 text-slate-400 sm:text-lg sm:leading-8">
-          Get a complete done-for-you growth system: Custom SEO Website, 5-Star Google Review Automation, Missed-Call Auto-Text Backs, and Repeat Client Campaigns — all for <strong className="font-semibold text-white">$297/month</strong> with <strong className="font-semibold text-white">zero setup fees</strong>.
-        </p>
-
-        <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <StrategyCallButton />
-        </div>
-
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-medium text-slate-400">
-          <span className="flex items-center gap-1.5">
-            <Check className="h-4 w-4 text-blue-400" /> $297/mo Flat Rate
-          </span>
-          <span className="hidden h-1 w-1 rounded-full bg-slate-700 sm:block" />
-          <span className="flex items-center gap-1.5">
-            <Check className="h-4 w-4 text-blue-400" /> $0 Setup Fee
-          </span>
-          <span className="hidden h-1 w-1 rounded-full bg-slate-700 sm:block" />
-          <span className="flex items-center gap-1.5">
-            <Check className="h-4 w-4 text-blue-400" /> No Long Contracts
+        {/* Rating Stars & Text */}
+        <div className="flex min-w-0 flex-col items-start gap-0.5 text-left">
+          <div className="flex items-center gap-1.5">
+            <div className="flex shrink-0 text-amber-400">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400 sm:h-4 sm:w-4" />
+              ))}
+            </div>
+            <span className="text-xs font-semibold text-white">4.9/5</span>
+          </div>
+          <span className="whitespace-nowrap text-xs text-slate-400">
+            Trusted by <span className="font-semibold text-slate-300">20k+ contractors</span>
           </span>
         </div>
-      </section>
+
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+{/* ================= SERVICES SECTION ================= */}
+
+ <PlatformCompatibility />
+
+
+
 
       {/* SERVICES / STACK */}
-      <section id="services" className="relative z-10 border-t border-slate-800/60 py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-6 text-center lg:px-8">
-          <div className="mx-auto max-w-3xl">
-            <span className="inline-flex rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
-              What You Get
-            </span>
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
-              Everything included for <span className="text-blue-400">$297/month</span>
-            </h2>
-            <p className="mt-4 text-slate-400 text-base sm:text-lg">
-              One flat price replaces expensive single-function tools and traditional agency fees.
-            </p>
-          </div>
-
-          <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {services.map((item, index) => (
-              <div
-                key={index}
-                className="group relative flex flex-col items-center text-center rounded-3xl border border-slate-800 bg-slate-900/30 p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/40 hover:bg-slate-900/60"
-              >
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 text-blue-400">
-                  {item.icon}
-                </div>
-                <span className="mb-4 text-[11px] font-semibold uppercase tracking-wider text-slate-500 border border-slate-800 rounded-full px-3 py-1">
-                  {item.tag}
-                </span>
-
-                <h3 className="text-xl font-bold tracking-tight text-white">{item.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-400">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+     
 
       {/* AGENCY COMPARISON TABLE */}
-      <section className="relative z-10 border-t border-slate-800/60 bg-[#050b0f] py-20">
-        <div className="mx-auto max-w-5xl px-6 text-center lg:px-8">
-          <div className="text-center">
-            <span className="inline-flex rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
-              The Comparison
-            </span>
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-              How we compare to traditional agencies.
-            </h2>
-          </div>
+     
+        <SetupSteps/>
+       
+     <SuccessStoriess/>
 
-          <div className="mt-12 overflow-x-auto rounded-3xl border border-slate-800 bg-slate-900/40 p-2 backdrop-blur-sm">
-            <table className="w-full text-center text-sm text-slate-300">
-              <thead className="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-400">
-                <tr>
-                  <th className="px-6 py-4 text-center">Feature</th>
-                  <th className="px-6 py-4 text-center text-blue-400 font-bold bg-blue-500/5 rounded-t-xl">Our Model</th>
-                  <th className="px-6 py-4 text-center text-slate-500">Traditional Agencies</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60">
-                {comparisons.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-slate-800/20">
-                    <td className="px-6 py-4 font-semibold text-white">{row.feature}</td>
-                    <td className="px-6 py-4 font-bold text-blue-400 bg-blue-500/5 inline-flex items-center justify-center gap-2 w-full">
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-blue-400" />
-                      {row.us}
-                    </td>
-                    <td className="px-6 py-4 text-slate-500">{row.others}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+<PricingCard/>
 
-      {/* HOW IT WORKS */}
-      <section id="process" className="relative z-10 border-t border-slate-800/60 py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-6 text-center lg:px-8">
-          <div className="text-center">
-            <span className="inline-flex rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
-              How It Works
-            </span>
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
-              Ready in 3 steps.
-            </h2>
-          </div>
-
-          <div className="mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-3">
-            <ProcessCard
-              number="01"
-              icon={<PhoneCall className="h-6 w-6" />}
-              title="1. Onboarding Call"
-              description="A quick 20-minute strategy call to collect your business details and service area preferences."
-            />
-            <ProcessCard
-              number="02"
-              icon={<Zap className="h-6 w-6" />}
-              title="2. We Build It"
-              description="Our team builds your SEO website, configures missed-call text backs, and links review engine."
-            />
-            <ProcessCard
-              number="03"
-              icon={<BarChart3 className="h-6 w-6" />}
-              title="3. Launch"
-              description="Your engine goes live with no setup fees or contract lock-ins."
-            />
-          </div>
-        </div>
-      </section>
 
       {/* WHY CHOOSE US */}
-      <section className="relative z-10 border-t border-slate-800/60 bg-[#050b0f] py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-6 text-center lg:px-8">
-          <div className="mx-auto max-w-3xl">
-            <span className="inline-flex rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
-              Built For Contractors
-            </span>
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
-              Done-for-you service. <br />
-              <span className="text-slate-500">Zero tech headaches.</span>
-            </h2>
-            <p className="mt-6 text-slate-400 leading-7">
-              Contractors should be on the job site, not managing software setups or chasing agency retainers. We handle domain, site updates, missed-call auto-texting, and Google review automation for $297/month.
-            </p>
-            <div className="mt-8 flex justify-center">
-              <StrategyCallButton />
-            </div>
-          </div>
-
-          <div className="mx-auto mt-16 grid max-w-4xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <Reason
-              icon={<DollarSign className="h-5 w-5" />}
-              title="$0 Setup Fee"
-              description="No expensive initial setup fees."
-            />
-            <Reason
-              icon={<ShieldCheck className="h-5 w-5" />}
-              title="Cancel Anytime"
-              description="Flat month-to-month plan with no long contracts."
-            />
-            <Reason
-              icon={<Clock className="h-5 w-5" />}
-              title="Full Support"
-              description="We handle system updates and ongoing management."
-            />
-            <Reason
-              icon={<Zap className="h-5 w-5" />}
-              title="Fast Launch"
-              description="Go live in days with zero technical setup on your end."
-            />
-          </div>
-        </div>
-      </section>
+      
 
       {/* TARGET INDUSTRIES */}
-      <section className="relative z-10 border-t border-slate-800/60 py-16">
-        <div className="mx-auto max-w-7xl px-6 text-center lg:px-8">
-          <h2 className="text-2xl font-bold text-white sm:text-3xl">
-            Built for local home service professionals
-          </h2>
-          <div className="mx-auto mt-8 flex max-w-4xl flex-wrap justify-center gap-3">
-            {industries.map((ind) => (
-              <div
-                key={ind}
-                className="rounded-full border border-slate-800 bg-slate-900/60 px-5 py-2 text-sm font-medium text-slate-300"
-              >
-                {ind}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TargetIndustries/>
 
       {/* FINAL CTA */}
-      <section className="relative z-10 overflow-hidden border-t border-slate-800/60 bg-[#050b0f] py-24">
-        <div className="relative mx-auto max-w-4xl px-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-400">
-            Get Started Today
-          </p>
-          <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
-            Ready to upgrade your contractor marketing?
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-slate-400 text-lg">
-            Schedule a 20-minute strategy call to start your $297/mo growth engine with $0 setup fee.
-          </p>
-          <div className="mt-8 flex justify-center">
-            <StrategyCallButton />
-          </div>
-        </div>
-      </section>
+     
+        <MoneyBackGuarantee />
+      
 
       {/* FAQ SECTION */}
       <section id="faq" className="relative z-10 border-t border-slate-800/60 py-20">

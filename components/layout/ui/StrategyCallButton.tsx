@@ -7,7 +7,7 @@ type StrategyCallButtonProps = {
 
 export default function StrategyCallButton({
   text = "Book a Free Strategy Call",
-  href = "/callbooking",
+  href = "/growth",
 }: StrategyCallButtonProps) {
   return (
     <div className="relative mt-10 flex justify-center">
