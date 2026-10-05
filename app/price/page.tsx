@@ -1,361 +1,359 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
-
 import {
   ArrowRight,
-  ArrowUpRight,
-  CalendarCheck,
   Check,
   ChevronDown,
-  Globe,
-  PhoneCall,
-  Search,
-  Star,
-  Workflow,
-  Zap,
 } from "lucide-react";
 
-export default function Pricing() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
+/* ------------------------------------------------------------------ */
+/*  Reveal — fades + slides content in the first time it scrolls      */
+/*  into view. Pure IntersectionObserver, no animation library.       */
+/* ------------------------------------------------------------------ */
+function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
 
-  const monthlyPrice = 299;
-  const yearlyPrice = monthlyPrice * 10;
-  const yearlySavings = monthlyPrice * 12 - yearlyPrice;
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
 
-  const faqs = [
-    {
-      question: "What do I get for $299/month?",
-      answer:
-        "You get a connected lead-to-job system built around your contractor business. Depending on your setup, that can include your website, missed-call textback, automated lead follow-up, appointment booking, review automation, and local visibility support.",
-    },
-    {
-      question: "Is there a setup fee?",
-      answer:
-        "No setup fee is required for the standard monthly plan. We'll discuss exactly what needs to be built during your strategy call before anything moves forward.",
-    },
-    {
-      question: "Do I have to manage the software myself?",
-      answer:
-        "No. The goal is to keep things simple for you. We handle the technical setup and automation so you can focus on running your contracting business.",
-    },
-    {
-      question: "How long does setup take?",
-      answer:
-        "The timeline depends on the website, integrations, and automations your business needs. After your onboarding information is received, we'll give you a clear launch timeline.",
-    },
-    {
-      question: "Can this work with my existing website?",
-      answer:
-        "Yes. In some cases we'll work with your existing website and improve the lead journey. In other cases, building a new website may make more sense. We'll determine that during the initial call.",
-    },
-    {
-      question: "Is this only for roofing companies?",
-      answer:
-        "No. Book More Leads is built for home-service businesses including roofing, HVAC, plumbing, electrical, solar, landscaping, remodeling, painting, and other contractor businesses.",
-    },
-  ];
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#091413] text-slate-100">
-      {/* Background */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.025]">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "url(https://grainy-gradients.vercel.app/noise.svg)",
-          }}
-        />
-      </div>
+    <div
+      ref={ref}
+      style={{ transitionDelay: `${delay}ms` }}
+      className={`transition-all duration-700 ease-out will-change-transform ${
+        visible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+      } ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
 
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#ffffff20_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.045]" />
+const plans = [
+  {
+    name: "Starter",
+    badge: "Starter",
+    monthlyPrice: 97,
+    yearlyPrice: 970,
+    description: "Perfect for smaller businesses and solo marketers",
+    features: [
+      "3 Sub-Accounts",
+      "Unlimited Contacts",
+      "Unlimited Users",
+      "24/7 Support",
+      "All Core Features",
+    ],
+    isPopular: false,
+  },
+  {
+    name: "Unlimited",
+    badge: "Unlimited",
+    popularBadge: "MOST POPULAR",
+    monthlyPrice: 297,
+    yearlyPrice: 2970,
+    description: "Built for growing agencies",
+    featuresHeader: "Everything in Starter Plan and...",
+    features: [
+      "Unlimited Sub-Accounts",
+      "Rebill Phone & Email (no markup)",
+      "Basic API Access",
+    ],
+    isPopular: true,
+  },
+  {
+    name: "Agency Pro",
+    badge: "Agency Pro",
+    monthlyPrice: 497,
+    yearlyPrice: 4970,
+    description: "Ideal for SaaSPRENEURs & Agencies looking to go SaaS",
+    featuresHeader: "Everything in Unlimited Plan and...",
+    features: [
+      "SaaS Mode",
+      "Automated Sub-Account Creation",
+      "Rebill Phone & Email with Markup",
+      "User/Agent Reporting",
+    ],
+    isPopular: false,
+  },
+];
 
-      <div className="pointer-events-none absolute left-1/2 top-[-300px] h-[700px] w-[900px] -translate-x-1/2 rounded-full bg-blue-600/10 blur-[140px]" />
+const faqs = [
+  {
+    question: "What is included in the 14-day free trial?",
+    answer:
+      "You get full access to all features on your chosen plan for 14 days with zero restrictions. You won't be charged until the trial period ends.",
+  },
+  {
+    question: "Can I change or cancel my plan later?",
+    answer:
+      "Yes, you can upgrade, downgrade, or cancel your subscription at any time directly from your dashboard.",
+  },
+  {
+    question: "Are there limits on contacts or users?",
+    answer:
+      "No! All plans include unlimited contacts and unlimited users so your team can scale without any arbitrary growth penalties.",
+  },
+  {
+    question: "How does SaaS Mode work on the Agency Pro plan?",
+    answer:
+      "SaaS Mode allows you to repackage and resell the platform under your own brand, set your own pricing, and automate sub-account provisioning for your clients.",
+  },
+];
+
+const NAVBAR_TO_CONTENT_GAP = "mt-16 sm:mt-20 md:mt-24 lg:mt-28";
+
+export default function PricingPage() {
+  const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  return (
+    <main className="relative min-h-screen bg-[#070e12] text-white font-sans overflow-x-hidden">
+      {/* HERO GLOW / BACKGROUND ACCENT */}
+      <div className="pointer-events-none absolute left-1/2 top-[-200px] h-[350px] w-[90vw] sm:h-[500px] sm:w-[600px] md:h-[600px] md:w-[800px] -translate-x-1/2 rounded-full bg-[#0d1d2b] blur-[100px] sm:blur-[140px] opacity-60" />
 
       {/* NAVBAR */}
       <Navbar />
 
-      {/* HERO */}
-      <section className="relative z-10 mx-auto max-w-6xl px-5 pb-14 pt-16 text-center sm:px-6 sm:pb-16 sm:pt-24 md:pt-28 lg:pb-20 lg:pt-32">
-        <h1 className="mx-auto mt-4 max-w-5xl text-5xl font-extrabold leading-[0.95] tracking-[-0.055em] text-white sm:text-6xl md:text-7xl">
-          Our Price.
-        </h1>
-      </section>
+      {/* PRICING SECTION */}
+      <section
+        id="pricing"
+        className={`relative z-10 scroll-mt-20 ${NAVBAR_TO_CONTENT_GAP}`}
+      >
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20 lg:pb-28">
+          {/* HEADER */}
+          <Reveal className="mx-auto max-w-4xl text-center">
+            <span className="inline-flex rounded-full border border-slate-800 bg-[#0f172a] px-3.5 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
+              Pricing & Plans
+            </span>
 
-      {/* PRICING CARD */}
-      <section className="relative z-10 px-4 pb-20 sm:px-6 sm:pb-24">
-        <div className="mx-auto w-full max-w-5xl">
-          <div className="relative overflow-hidden rounded-[28px] border border-blue-500/30 bg-slate-900/70 shadow-2xl shadow-blue-950/20 backdrop-blur-xl sm:rounded-[32px]">
-            {/* Glow */}
-            <div className="pointer-events-none absolute right-[-150px] top-[-150px] h-[400px] w-[400px] rounded-full bg-blue-600/15 blur-[120px]" />
+            <h1 className="mt-4 sm:mt-6 text-[clamp(1.75rem,6vw,4.5rem)] font-extrabold leading-[1.1] tracking-tight text-white">
+              Start with a <span className="text-blue-400">FREE 14-day trial</span> on
+              <br className="hidden sm:inline" /> any plan below!
+            </h1>
 
-            {/* Label */}
-            <div className="border-b border-blue-500/20 bg-blue-500/[0.06] px-5 py-3 text-center sm:px-6">
-              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-400 sm:text-[11px] sm:tracking-[0.22em]">
-                The Lead → Job System
-              </span>
+            <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-[clamp(0.8rem,2vw,1.125rem)] leading-6 sm:leading-7 text-slate-300">
+              Unlimited contacts, unlimited Users. Scale your business without a tax on growth.
+            </p>
+
+            {/* TOGGLE BUTTONS */}
+            <div className="mt-8 sm:mt-10 flex justify-center">
+              <div className="inline-flex rounded-lg border border-slate-700/80 bg-slate-900/80 p-1.5 backdrop-blur-md">
+                <button
+                  type="button"
+                  onClick={() => setBilling("monthly")}
+                  className={`rounded-md px-6 sm:px-8 py-2.5 text-sm font-semibold transition-all ${
+                    billing === "monthly"
+                      ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
+                      : "text-slate-300 hover:text-white"
+                  }`}
+                >
+                  Monthly
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBilling("yearly")}
+                  className={`rounded-md px-6 sm:px-8 py-2.5 text-sm font-semibold transition-all ${
+                    billing === "yearly"
+                      ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
+                      : "text-slate-300 hover:text-white"
+                  }`}
+                >
+                  Save with annual
+                </button>
+              </div>
             </div>
+          </Reveal>
 
-            <div className="relative grid lg:grid-cols-[0.9fr_1.1fr]">
-              {/* LEFT */}
-              <div className="border-b border-slate-800 p-6 sm:p-9 lg:border-b-0 lg:border-r lg:p-12">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 text-blue-400">
-                  <Zap className="h-6 w-6" />
-                </div>
+          {/* PRICING CARDS GRID */}
+          <div className="mt-12 sm:mt-16 grid grid-cols-1 gap-8 lg:grid-cols-3 lg:items-center">
+            {plans.map((plan, index) => {
+              const price = billing === "monthly" ? plan.monthlyPrice : plan.yearlyPrice;
 
-                <h2 className="mt-6 text-2xl font-extrabold tracking-tight text-white sm:mt-7 sm:text-3xl">
-                  Book More Leads
-                </h2>
-
-                <p className="mt-3 max-w-md text-sm leading-6 text-slate-400">
-                  Everything you need to capture, respond to, follow up with,
-                  and convert more opportunities.
-                </p>
-
-                {/* BILLING TOGGLE */}
-                <div className="mt-7 flex w-full max-w-sm rounded-xl border border-slate-800 bg-slate-950/70 p-1">
-                  <button
-                    type="button"
-                    onClick={() => setBilling("monthly")}
-                    className={`flex-1 rounded-lg px-4 py-2.5 text-xs font-semibold transition-all sm:text-sm ${
-                      billing === "monthly"
-                        ? "bg-blue-600 text-white shadow-lg shadow-blue-950/30"
-                        : "text-slate-500 hover:text-white"
+              return (
+                <Reveal key={plan.name} delay={index * 120}>
+                  <div
+                    className={`relative flex flex-col rounded-[24px] p-6 sm:p-8 text-center transition-all ${
+                      plan.isPopular
+                        ? "border-2 border-blue-500 bg-[#0c1e3f] shadow-[0_0_50px_rgba(37,99,235,0.25)] lg:-translate-y-4"
+                        : "border border-slate-800 bg-[#0f172a] shadow-xl shadow-black/40"
                     }`}
                   >
-                    Monthly
-                  </button>
+                    {/* MOST POPULAR BADGE */}
+                    {plan.isPopular && (
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border border-blue-400/30 bg-blue-600 px-6 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-md">
+                        {plan.popularBadge}
+                      </div>
+                    )}
 
-                  <button
-                    type="button"
-                    onClick={() => setBilling("yearly")}
-                    className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-semibold transition-all sm:text-sm ${
-                      billing === "yearly"
-                        ? "bg-blue-600 text-white shadow-lg shadow-blue-950/30"
-                        : "text-slate-500 hover:text-white"
-                    }`}
-                  >
-                    Yearly
-
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide ${
-                        billing === "yearly"
-                          ? "bg-white/15 text-white"
-                          : "bg-blue-500/10 text-blue-400"
-                      }`}
-                    >
-                      Save 2 Months
-                    </span>
-                  </button>
-                </div>
-
-                {/* PRICE */}
-                <div className="mt-7 flex items-end gap-2 sm:mt-8">
-                  <span className="text-5xl font-extrabold tracking-[-0.06em] text-white sm:text-6xl">
-                    ${billing === "monthly" ? monthlyPrice : yearlyPrice}
-                  </span>
-
-                  <span className="mb-2 text-sm text-slate-500">
-                    {billing === "monthly" ? "/ month" : "/ year"}
-                  </span>
-                </div>
-
-                {/* YEARLY CALCULATOR */}
-                <div className="mt-3 min-h-[34px]">
-                  {billing === "yearly" ? (
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
-                      <span className="text-slate-500">
-                        Normally ${monthlyPrice * 12}/year
-                      </span>
-
-                      <span className="text-blue-400">•</span>
-
-                      <span className="font-semibold text-blue-400">
-                        Save ${yearlySavings}/year
+                    {/* PLAN TITLE BADGE */}
+                    <div className="mt-2">
+                      <span className="inline-block rounded-md border border-slate-700/60 bg-slate-800/50 px-4 py-1 text-sm font-medium text-slate-200">
+                        {plan.badge}
                       </span>
                     </div>
-                  ) : (
-                    <p className="text-xs text-slate-600">
-                      No complicated packages. No unnecessary software.
+
+                    {/* PRICE */}
+                    <div className="mt-6 flex items-baseline justify-center gap-1">
+                      <span className="text-5xl font-extrabold tracking-tight text-white sm:text-6xl">
+                        ${price}
+                      </span>
+                      <span className="text-sm text-slate-400">
+                        /{billing === "monthly" ? "Month" : "Year"}
+                      </span>
+                    </div>
+
+                    {/* DESCRIPTION */}
+                    <p className="mt-4 min-h-[40px] text-xs leading-5 text-slate-300 sm:text-sm">
+                      {plan.description}
                     </p>
-                  )}
-                </div>
 
-                {/* CTA */}
-                <div className="relative mt-8 sm:mt-9">
-                  <div className="pointer-events-none absolute -inset-4 rounded-full bg-blue-600/20 blur-2xl" />
+                    {/* DIVIDER */}
+                    <div className="my-6 border-t border-slate-800/80" />
 
-                  <a
-                    href="/bookingcall"
-                    className="group relative inline-flex w-full items-center justify-center gap-3 rounded-xl bg-blue-600 px-6 py-4 text-sm font-bold text-white shadow-xl shadow-blue-950/40 transition-all hover:-translate-y-0.5 hover:bg-blue-500 sm:px-7"
-                  >
-                    Book a Free Strategy Call
+                    {/* FEATURES HEADER (IF ANY) */}
+                    {plan.featuresHeader && (
+                      <p className="mb-6 text-sm font-semibold text-slate-200">
+                        {plan.featuresHeader}
+                      </p>
+                    )}
 
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </a>
-                </div>
+                    {/* FEATURES LIST */}
+                    <ul className="space-y-4 text-xs font-medium text-slate-300 sm:text-sm">
+                      {plan.features.map((feature, idx) => (
+                        <li key={idx} className="border-b border-slate-800/40 pb-3 last:border-0 flex items-center justify-center gap-2">
+                          <Check className="h-4 w-4 text-cyan-300 shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
-                <div className="mt-5 flex flex-wrap justify-center gap-x-4 gap-y-2 text-[11px] text-slate-500">
-                  <span className="flex items-center gap-1.5">
-                    <Check className="h-3.5 w-3.5 text-blue-400" />
-                    20-minute call
-                  </span>
+      {/* CTA SECTION */}
+      <section className="relative z-10 overflow-hidden border-y border-slate-800 bg-[#0d1d2b]/60 py-16 sm:py-24 lg:py-32">
+        <div className="relative mx-auto w-full max-w-5xl px-4 sm:px-6 text-center">
+          <Reveal>
+            <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.25em] text-cyan-300">
+              One connected system
+            </p>
 
-                  <span className="hidden h-1 w-1 self-center rounded-full bg-slate-700 sm:block" />
+            <h2 className="mt-4 sm:mt-5 text-[clamp(1.75rem,5vw,3.75rem)] font-extrabold tracking-tight text-white">
+              More opportunities.
+              <span className="block text-blue-400">Less leakage.</span>
+            </h2>
 
-                  <span className="flex items-center gap-1.5">
-                    <Check className="h-3.5 w-3.5 text-blue-400" />
-                    No pressure
-                  </span>
-                </div>
-              </div>
+            <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-sm sm:text-base md:text-lg leading-6 sm:leading-7 text-slate-300">
+              Stop letting good opportunities disappear between the first inquiry and the booked job.
+            </p>
+          </Reveal>
 
-              {/* RIGHT */}
-              <div className="p-6 sm:p-9 lg:p-12">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
-                  Included
-                </p>
-
-                <div className="mt-6 space-y-5 sm:mt-7">
-                  <IncludedFeature
-                    icon={<Globe className="h-4 w-4" />}
-                    title="High-Converting Website"
-                    description="Built to generate calls, messages, and quote requests."
+          <Reveal delay={150}>
+            <div className="relative mt-8 sm:mt-10">
+              <a
+                href="/callbooking"
+                className="group relative inline-flex w-full sm:w-auto items-center justify-center gap-3 rounded-full bg-blue-600 px-6 py-3.5 sm:px-8 sm:py-4 text-sm sm:text-base font-bold text-white shadow-xl shadow-blue-950/50 transition-all hover:bg-blue-500 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <div className="-space-x-2 flex items-center">
+                  <img
+                    src="https://i.pravatar.cc/80?img=12"
+                    alt=""
+                    className="h-6 w-6 sm:h-7 sm:w-7 rounded-full border-2 border-blue-600 object-cover"
                   />
-
-                  <IncludedFeature
-                    icon={<PhoneCall className="h-4 w-4" />}
-                    title="Missed-Call Textback"
-                    description="Automatically follow up when you can't answer."
+                  <img
+                    src="https://i.pravatar.cc/80?img=32"
+                    alt=""
+                    className="h-6 w-6 sm:h-7 sm:w-7 rounded-full border-2 border-blue-600 object-cover"
                   />
-
-                  <IncludedFeature
-                    icon={<Workflow className="h-4 w-4" />}
-                    title="Automated Lead Follow-Up"
-                    description="Keep prospects moving instead of letting leads go cold."
-                  />
-
-                  <IncludedFeature
-                    icon={<CalendarCheck className="h-4 w-4" />}
-                    title="Appointment Booking"
-                    description="Give qualified prospects an easy next step."
-                  />
-
-                  <IncludedFeature
-                    icon={<Star className="h-4 w-4" />}
-                    title="Review Automation"
-                    description="Consistently ask happy customers for reviews."
-                  />
-
-                  <IncludedFeature
-                    icon={<Search className="h-4 w-4" />}
-                    title="Local Visibility"
-                    description="Build the online foundation for local customers."
+                  <img
+                    src="https://i.pravatar.cc/80?img=47"
+                    alt=""
+                    className="h-6 w-6 sm:h-7 sm:w-7 rounded-full border-2 border-blue-600 object-cover"
                   />
                 </div>
-              </div>
+
+                <span>Book a Free Strategy Call</span>
+
+                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:translate-x-1" />
+              </a>
             </div>
-          </div>
+
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-5 gap-y-2 text-[11px] sm:text-xs text-slate-400">
+              <span className="flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-amber-400" />
+                20-minute call
+              </span>
+
+              <span className="hidden h-1 w-1 rounded-full bg-slate-800 sm:block" />
+
+              <span className="flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-amber-400" />
+                No pressure
+              </span>
+
+              <span className="hidden h-1 w-1 rounded-full bg-slate-800 sm:block" />
+
+              <span className="flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-amber-400" />
+                See where leads are being lost
+              </span>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* VALUE STATEMENT */}
-      <section className="relative z-10 border-y border-slate-800/60 bg-[#07100f]">
-        <div className="mx-auto max-w-6xl px-5 py-20 text-center sm:px-6 sm:py-24 lg:py-28">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-400">
-            Built around one goal
-          </p>
-
-          <h2 className="mt-6 text-4xl font-extrabold leading-none tracking-[-0.05em] text-white sm:text-6xl lg:text-7xl">
-            TURN MORE
-            <br />
-            <span className="text-blue-400">LEADS INTO JOBS.</span>
-          </h2>
-
-          <p className="mx-auto mt-7 max-w-2xl text-base leading-7 text-slate-500 sm:text-lg">
-            Your website gets the attention. Your system responds. Your
-            follow-up keeps the conversation moving. Your calendar gets the
-            appointment.
-          </p>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="relative z-10 overflow-hidden">
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/15 blur-[120px]" />
-
-        <div className="relative mx-auto max-w-5xl px-5 py-24 text-center sm:px-6 sm:py-28 lg:py-36">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-400">
-            One simple monthly system
-          </p>
-
-          <h2 className="mt-5 text-4xl font-extrabold tracking-[-0.04em] text-white sm:text-6xl">
-            Ready to stop losing
-            <span className="block text-blue-400">good leads?</span>
-          </h2>
-
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-slate-400 sm:text-lg">
-            Let's look at how your business currently handles leads and see
-            what your Lead → Job System could look like.
-          </p>
-
-          <div className="relative mt-10 inline-block">
-            <div className="pointer-events-none absolute -inset-5 rounded-full bg-blue-600/30 blur-2xl" />
-
-            <a
-              href="/bookingcall"
-              className="group relative inline-flex items-center gap-3 rounded-full bg-blue-600 px-7 py-4 text-base font-bold text-white shadow-2xl shadow-blue-950/50 transition-all hover:-translate-y-0.5 hover:bg-blue-500 sm:px-10"
-            >
-              Book a Free Strategy Call
-
-              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </a>
-          </div>
-
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-slate-600">
-            <span className="flex items-center gap-1.5">
-              <Check className="h-3.5 w-3.5 text-blue-400" />
-              20-minute call
-            </span>
-
-            <span className="hidden h-1 w-1 rounded-full bg-slate-700 sm:block" />
-
-            <span className="flex items-center gap-1.5">
-              <Check className="h-3.5 w-3.5 text-blue-400" />
-              No pressure
-            </span>
-
-            <span className="hidden h-1 w-1 rounded-full bg-slate-700 sm:block" />
-
-            <span className="flex items-center gap-1.5">
-              <Check className="h-3.5 w-3.5 text-blue-400" />
-              See what you're missing
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
+      {/* FAQ SECTION */}
       <section
         id="faq"
-        className="relative z-10 border-t border-slate-800/60"
+        className="relative z-10 scroll-mt-20 bg-[#070e12] border-t border-slate-800"
       >
-        <div className="mx-auto max-w-4xl px-5 py-20 sm:px-6 sm:py-24 lg:py-28">
-          <div className="text-center">
-            <span className="inline-flex rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
+        <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 py-16 sm:py-24 lg:py-28">
+          <Reveal className="text-center">
+            <span className="inline-flex rounded-full border border-slate-800 bg-[#0f172a] px-3.5 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
               FAQ
             </span>
 
-            <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+            <h2 className="mt-4 sm:mt-5 text-[clamp(1.5rem,4vw,3rem)] font-extrabold tracking-tight text-white">
               Questions? We've got answers.
             </h2>
-          </div>
 
-          <div className="mt-12 divide-y divide-slate-800 border-y border-slate-800 sm:mt-14">
+            <p className="mx-auto mt-3 sm:mt-5 max-w-2xl text-sm sm:text-base leading-6 sm:leading-7 text-slate-400">
+              Everything you need to know about pricing and plans.
+            </p>
+          </Reveal>
+
+          <Reveal delay={120} className="mt-10 sm:mt-14 divide-y divide-slate-800 border-y border-slate-800">
             {faqs.map((faq, index) => {
               const isOpen = openFaq === index;
 
@@ -364,28 +362,26 @@ export default function Pricing() {
                   <button
                     type="button"
                     onClick={() => setOpenFaq(isOpen ? null : index)}
-                    className="flex w-full items-center justify-between gap-5 py-5 text-left sm:py-6"
+                    className="flex w-full items-center justify-between gap-4 sm:gap-6 py-4 sm:py-6 text-left transition-colors hover:bg-white/[0.02]"
                   >
-                    <span className="text-base font-semibold text-white sm:text-lg">
+                    <span className="text-sm sm:text-base md:text-lg font-semibold text-white">
                       {faq.question}
                     </span>
 
                     <ChevronDown
-                      className={`h-5 w-5 shrink-0 text-slate-500 transition-transform ${
+                      className={`h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-slate-400 transition-transform duration-300 ${
                         isOpen ? "rotate-180 text-blue-400" : ""
                       }`}
                     />
                   </button>
 
                   <div
-                    className={`grid transition-all duration-300 ${
-                      isOpen
-                        ? "grid-rows-[1fr] pb-6"
-                        : "grid-rows-[0fr]"
+                    className={`grid transition-all duration-300 ease-in-out ${
+                      isOpen ? "grid-rows-[1fr] pb-4 sm:pb-6" : "grid-rows-[0fr]"
                     }`}
                   >
                     <div className="overflow-hidden">
-                      <p className="max-w-3xl text-sm leading-7 text-slate-400">
+                      <p className="max-w-3xl text-xs sm:text-sm leading-relaxed text-slate-300">
                         {faq.answer}
                       </p>
                     </div>
@@ -393,42 +389,12 @@ export default function Pricing() {
                 </div>
               );
             })}
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* FOOTER COMPONENT */}
+      {/* FOOTER */}
       <Footer />
     </main>
-  );
-}
-
-/* -------------------------------------------------------
-   COMPONENTS
-------------------------------------------------------- */
-
-function IncludedFeature({
-  icon,
-  title,
-  description,
-}: {
-  icon: ReactNode;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="flex gap-3.5 sm:gap-4">
-      <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-500/20 bg-blue-500/10 text-blue-400">
-        {icon}
-      </div>
-
-      <div className="min-w-0">
-        <h3 className="text-sm font-bold text-white">{title}</h3>
-
-        <p className="mt-1 text-sm leading-6 text-slate-500">
-          {description}
-        </p>
-      </div>
-    </div>
   );
 }
