@@ -197,14 +197,12 @@ export default function ProductsPage() {
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20 lg:pb-28">
           {/* HEADER */}
           <Reveal className="mx-auto max-w-4xl text-center">
-            <span className="inline-flex rounded-full border border-slate-800 bg-[#0f172a] px-3.5 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
-              The Lead → Job System
-            </span>
+          
 
             {/* clamp() keeps the type fluid on every screen size */}
             <h1 className="mt-4 sm:mt-6 text-[clamp(1.75rem,6vw,4.5rem)] font-extrabold leading-[1.1] tracking-tight text-white">
-              One system for{" "}
-              <span className="text-blue-400">more booked jobs.</span>
+              A system for{" "}
+              <span className="text-blue-400">More booked jobs.</span>
             </h1>
 
             <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-[clamp(0.8rem,2vw,1.125rem)] leading-6 sm:leading-7 text-slate-300">

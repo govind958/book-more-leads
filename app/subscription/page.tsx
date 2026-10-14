@@ -1,399 +1,428 @@
-
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  ArrowLeft,
-  Check,
-  ShieldCheck,
-  Sparkles,
-  Zap,
-} from "lucide-react";
-import Link from "next/link";
-
-const PAYPAL_CLIENT_ID =
-  "BAAZyF3aDC2-qL6ZVacDko14sz9M6YWcT7iezHayUDdWE3ZnZVcSfelnF6ZCDiTLYwn9b47ZmGtusgaZJY";
-
-const PAYPAL_PLAN_ID = "P-7TA63695A4220824KNKZISNY";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Script from "next/script";
 
 declare global {
   interface Window {
     paypal?: {
       Buttons: (options: {
-        style: {
-          shape: string;
-          color: string;
-          layout: string;
-          label: string;
+        style?: {
+          shape?: string;
+          color?: string;
+          layout?: string;
+          label?: string;
         };
         createSubscription: (
-          data: unknown,
+          data: Record<string, unknown>,
           actions: {
             subscription: {
-              create: (config: { plan_id: string }) => Promise<string>;
+              create: (details: {
+                plan_id: string;
+              }) => Promise<string>;
             };
           }
         ) => Promise<string>;
         onApprove: (data: {
-          subscriptionID?: string;
+          subscriptionID: string;
         }) => void;
-        onError?: (err: unknown) => void;
+        onError?: (error: unknown) => void;
       }) => {
-        render: (selector: string) => Promise<void>;
+        render: (container: HTMLElement) => Promise<void>;
+        close: () => Promise<void>;
       };
     };
   }
 }
 
-export default function SubscribePage() {
-  const [paypalLoaded, setPaypalLoaded] = useState(false);
-  const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
-  const [paypalError, setPaypalError] = useState(false);
+const PAYPAL_CLIENT_ID =
+  "BAAZyF3aDC2-qL6ZVacDko14sz9M6YWcT7iezHayUDdWE3ZnZVcSfelnF6ZCDiTLYwn9b47ZmGtusgaZJY";
 
-  useEffect(() => {
-    if (window.paypal) {
-      setPaypalLoaded(true);
-      return;
-    }
+interface PlanConfig {
+  name: string;
+  priceLabel: string;
+  period: string;
+  savings?: string;
+  planId: string;
+}
 
-    const existingScript = document.querySelector(
-      'script[data-paypal-sdk="stackboard"]'
-    );
+const PLANS: Record<string, PlanConfig> = {
+  monthly: {
+    name: "Monthly",
+    priceLabel: "$297",
+    period: "/ month",
+    planId: "P-94F37623CB736444BNLHWZJY",
+  },
+  quarterly: {
+    name: "Quarterly",
+    priceLabel: "$891",
+    period: "/ 3 months",
+    savings: "Save $100+",
+    planId: "P-2AA98342VH4106125NLHXWPI",
+  },
+};
 
-    if (existingScript) {
-      existingScript.addEventListener("load", () => {
-        setPaypalLoaded(true);
-      });
+type PlanKey = keyof typeof PLANS;
 
-      return;
-    }
+export default function CheckoutPage() {
+  const [selectedPlan, setSelectedPlan] = useState<PlanKey>("monthly");
+  const [sdkReady, setSdkReady] = useState(false);
+  const [approved, setApproved] = useState(false);
+  const [subscriptionId, setSubscriptionId] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const script = document.createElement("script");
+  const paypalContainer = useRef<HTMLDivElement>(null);
+  const paypalButtons = useRef<{ close: () => Promise<void> } | null>(null);
+  const renderVersion = useRef(0);
 
-    script.src =
-      `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}` +
-      `&vault=true&intent=subscription`;
+  const currentPlan = PLANS[selectedPlan];
 
-    script.async = true;
-    script.setAttribute("data-sdk-integration-source", "button-factory");
-    script.setAttribute("data-paypal-sdk", "stackboard");
+  const renderPayPalButton = useCallback(async () => {
+    const version = ++renderVersion.current;
+    const container = paypalContainer.current;
 
-    script.onload = () => {
-      setPaypalLoaded(true);
-    };
+    if (!sdkReady || !window.paypal || !container || approved) return;
 
-    script.onerror = () => {
-      setPaypalError(true);
-    };
+    setError("");
+    setLoading(true);
 
-    document.body.appendChild(script);
+    try {
+      if (paypalButtons.current) {
+        try {
+          await paypalButtons.current.close();
+        } catch {}
+        paypalButtons.current = null;
+      }
 
-    return () => {
-      script.remove();
-    };
-  }, []);
+      if (version !== renderVersion.current) return;
+      container.replaceChildren();
 
-  useEffect(() => {
-    if (!paypalLoaded || !window.paypal) return;
-
-    const container = document.getElementById(
-      `paypal-button-container-${PAYPAL_PLAN_ID}`
-    );
-
-    if (!container) return;
-
-    // Prevent rendering the button more than once.
-    container.innerHTML = "";
-
-    window.paypal
-      .Buttons({
+      const button = window.paypal.Buttons({
         style: {
           shape: "pill",
           color: "blue",
           layout: "vertical",
           label: "subscribe",
         },
-
-        createSubscription: function (_data, actions) {
+        createSubscription: (_data, actions) => {
           return actions.subscription.create({
-            plan_id: PAYPAL_PLAN_ID,
+            plan_id: currentPlan.planId,
           });
         },
-
-        onApprove: function (data) {
-          setSubscriptionId(data.subscriptionID || null);
+        onApprove: (data) => {
+          setSubscriptionId(data.subscriptionID);
+          setApproved(true);
         },
-
-        onError: function (error) {
-          console.error("PayPal error:", error);
-          setPaypalError(true);
+        onError: (err) => {
+          console.error("PayPal checkout error:", err);
+          setError("PayPal encountered an error. Please try again.");
         },
-      })
-      .render(`#paypal-button-container-${PAYPAL_PLAN_ID}`);
-  }, [paypalLoaded]);
+      });
+
+      paypalButtons.current = button;
+      await button.render(container);
+
+      if (version !== renderVersion.current) {
+        try {
+          await button.close();
+        } catch {}
+      }
+    } catch (err) {
+      console.error("Unable to render PayPal:", err);
+      if (version === renderVersion.current) {
+        setError("Unable to load payment options. Please refresh and try again.");
+      }
+    } finally {
+      if (version === renderVersion.current) {
+        setLoading(false);
+      }
+    }
+  }, [sdkReady, currentPlan, approved]);
+
+  useEffect(() => {
+    if (!sdkReady || approved) return;
+    void renderPayPalButton();
+    return () => {
+      renderVersion.current += 1;
+    };
+  }, [sdkReady, selectedPlan, approved, renderPayPalButton]);
+
+  useEffect(() => {
+    return () => {
+      const button = paypalButtons.current;
+      paypalButtons.current = null;
+      if (button) {
+        void button.close().catch(() => {});
+      }
+    };
+  }, []);
 
   return (
-    <main className="min-h-screen bg-[#F5F7F4] text-[#091413]">
-      {/* Header */}
-      <header className="border-b border-[rgba(9,20,19,.10)] bg-[#F5F7F4]/90 backdrop-blur-xl">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#091413]">
-              <Zap className="h-5 w-5 text-[#B0E4CC]" strokeWidth={2.5} />
-            </div>
+    <>
+      <Script
+        id="paypal-subscription-sdk"
+        src={`https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&vault=true&intent=subscription`}
+        strategy="afterInteractive"
+        onReady={() => setSdkReady(true)}
+        onError={() => setError("Unable to connect to PayPal. Please refresh.")}
+      />
 
-            <div>
-              <div className="text-[15px] font-black tracking-[-0.03em]">
-                STACKBOARD
-              </div>
-              <div className="text-[9px] font-bold uppercase tracking-[0.22em] text-[#408A71]">
-                AI Automation
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-sm font-semibold text-[#61706B] transition hover:text-[#091413]"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to website
-          </Link>
-        </div>
-      </header>
-
-      {/* Main */}
-      <section className="relative overflow-hidden px-5 py-14 sm:px-8 sm:py-20">
-        {/* Ambient shapes */}
-        <div className="pointer-events-none absolute -left-40 top-20 h-96 w-96 rounded-full bg-[#B0E4CC]/30 blur-3xl" />
-        <div className="pointer-events-none absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-[#408A71]/10 blur-3xl" />
-
-        <div className="relative mx-auto max-w-6xl">
-          {/* Intro */}
-          <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#408A71]/20 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#285A48] shadow-sm">
-              <Sparkles className="h-3.5 w-3.5" />
-              StackBoardAI
-            </div>
-
-            <h1 className="text-4xl font-black tracking-[-0.055em] sm:text-5xl lg:text-6xl">
-              Start your
-              <span className="block text-[#408A71]">
-                AI automation.
-              </span>
-            </h1>
-
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-[#61706B] sm:text-lg">
-              Subscribe to StackBoardAI and start building systems that
-              automate repetitive work, capture more opportunities, and help
-              your business run more efficiently.
-            </p>
+      <main className="checkout-page">
+        <div className="checkout-card">
+          <div className="header">
+            <a href="/" className="back-link">
+              <span>←</span> Book More Leads
+            </a>
+            <span className="badge">Secure Checkout</span>
           </div>
 
-          {/* Pricing + Payment */}
-          <div className="mx-auto mt-12 grid max-w-5xl gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-            {/* Left card */}
-            <div className="rounded-[30px] bg-[#091413] p-7 text-white shadow-[0_30px_80px_rgba(9,20,19,.16)] sm:p-9">
-              <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#B0E4CC]">
-                <Zap className="h-6 w-6 text-[#091413]" />
-              </div>
+          <div className="hero-info">
+            <h1>Lead to Job System</h1>
+            <p>Automate your contractor pipeline, capture missed calls, and secure 5-star reviews effortlessly.</p>
+          </div>
 
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#B0E4CC]">
-                Subscription
-              </p>
-
-              <h2 className="mt-3 text-3xl font-black tracking-[-0.04em]">
-                AI Automation
-              </h2>
-
-              <p className="mt-4 text-sm leading-6 text-white/60">
-                A connected automation system designed around the way your
-                business actually works.
-              </p>
-
-              <div className="my-8 h-px bg-white/10" />
-
-              <div className="space-y-4">
-                {[
-                  "AI-powered business workflows",
-                  "Lead capture and follow-up",
-                  "Automated customer communication",
-                  "Custom automation systems",
-                  "Ongoing system improvements",
-                ].map((item) => (
-                  <div key={item} className="flex items-start gap-3">
-                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#B0E4CC]">
-                      <Check
-                        className="h-3.5 w-3.5 text-[#091413]"
-                        strokeWidth={3}
-                      />
-                    </div>
-
-                    <span className="text-sm leading-5 text-white/80">
-                      {item}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-9 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                <div className="flex items-start gap-3">
-                  <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#B0E4CC]" />
-
-                  <div>
-                    <p className="text-sm font-bold">Secure payment</p>
-                    <p className="mt-1 text-xs leading-5 text-white/50">
-                      Your subscription payment is securely processed by
-                      PayPal.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Payment card */}
-            <div className="rounded-[30px] border border-[rgba(9,20,19,.10)] bg-white p-7 shadow-[0_30px_80px_rgba(9,20,19,.08)] sm:p-9">
-              <div className="mb-8">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#408A71]">
-                  Complete your subscription
-                </p>
-
-                <h2 className="mt-2 text-2xl font-black tracking-[-0.04em]">
-                  Choose PayPal to continue
-                </h2>
-
-                <p className="mt-3 text-sm leading-6 text-[#61706B]">
-                  Use your PayPal account or an available payment method
-                  supported by PayPal.
-                </p>
-              </div>
-
-              {!subscriptionId && (
-                <div className="rounded-2xl border border-[#091413]/10 bg-[#F5F7F4] p-5">
-                  <div className="mb-5">
-                    <div className="text-sm font-bold text-[#091413]">
-                      Subscription payment
-                    </div>
-
-                    <div className="mt-1 text-xs text-[#61706B]">
-                      Secure checkout powered by PayPal
-                    </div>
-                  </div>
-
-                  {!paypalLoaded && !paypalError && (
-                    <div className="flex min-h-[90px] items-center justify-center">
-                      <div className="flex items-center gap-3 text-sm font-medium text-[#61706B]">
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#408A71]/20 border-t-[#408A71]" />
-                        Loading secure checkout...
+          {!approved ? (
+            <>
+              {/* Plan Switcher */}
+              <div className="plan-switcher">
+                {(Object.keys(PLANS) as PlanKey[]).map((key) => {
+                  const plan = PLANS[key];
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      className={`plan-btn ${selectedPlan === key ? "active" : ""}`}
+                      onClick={() => {
+                        setSelectedPlan(key);
+                        setError("");
+                      }}
+                    >
+                      <div className="plan-meta">
+                        <strong>{plan.name}</strong>
+                        {plan.savings && <span className="savings-badge">{plan.savings}</span>}
                       </div>
-                    </div>
-                  )}
-
-                  {paypalError && (
-                    <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-                      We couldn't load PayPal right now. Please refresh the
-                      page and try again.
-                    </div>
-                  )}
-
-                  <div
-                    id={`paypal-button-container-${PAYPAL_PLAN_ID}`}
-                    className="min-h-[45px]"
-                  />
-                </div>
-              )}
-
-              {/* Success state */}
-              {subscriptionId && (
-                <div className="rounded-3xl border border-[#408A71]/20 bg-[#B0E4CC]/30 p-7 text-center">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#408A71]">
-                    <Check
-                      className="h-8 w-8 text-white"
-                      strokeWidth={3}
-                    />
-                  </div>
-
-                  <h3 className="mt-5 text-2xl font-black tracking-[-0.04em]">
-                    Subscription successful
-                  </h3>
-
-                  <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#61706B]">
-                    Your StackBoardAI subscription has been created
-                    successfully.
-                  </p>
-
-                  <div className="mt-6 rounded-xl bg-white p-4 text-left">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#61706B]">
-                      Subscription ID
-                    </p>
-
-                    <p className="mt-1 break-all text-sm font-semibold text-[#091413]">
-                      {subscriptionId}
-                    </p>
-                  </div>
-
-                  <Link
-                    href="/"
-                    className="mt-6 inline-flex items-center justify-center rounded-full bg-[#091413] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#285A48]"
-                  >
-                    Continue to StackBoardAI
-                  </Link>
-                </div>
-              )}
-
-              {!subscriptionId && (
-                <div className="mt-7 flex items-center justify-center gap-2 text-xs text-[#61706B]">
-                  <ShieldCheck className="h-4 w-4 text-[#408A71]" />
-                  Secure checkout powered by PayPal
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Bottom trust strip */}
-          <div className="mx-auto mt-8 grid max-w-5xl gap-3 sm:grid-cols-3">
-            {[
-              {
-                title: "Secure checkout",
-                text: "Payments handled by PayPal",
-              },
-              {
-                title: "AI-first systems",
-                text: "Automation built around your business",
-              },
-              {
-                title: "Human support",
-                text: "Real people when you need them",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-2xl border border-[rgba(9,20,19,.08)] bg-white/70 p-5"
-              >
-                <p className="text-sm font-bold">{item.title}</p>
-                <p className="mt-1 text-xs leading-5 text-[#61706B]">
-                  {item.text}
-                </p>
+                      <div className="plan-pricing">
+                        <span className="price">{plan.priceLabel}</span>
+                        <span className="period">{plan.period}</span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="border-t border-[rgba(9,20,19,.10)] px-5 py-8 sm:px-8">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 text-center text-xs text-[#61706B] sm:flex-row sm:items-center sm:justify-between sm:text-left">
-          <p>
-            © {new Date().getFullYear()} StackBoardAI. All rights reserved.
-          </p>
+              {/* PayPal Area */}
+              <div className="paypal-wrapper">
+                {!sdkReady && <div className="loading-pulse">Loading secure payment options...</div>}
+                {sdkReady && loading && <div className="loading-pulse">Preparing payment gateway...</div>}
+                <div
+                  ref={paypalContainer}
+                  id="paypal-button-container"
+                  className={!sdkReady || loading ? "hidden" : "visible"}
+                />
+              </div>
 
-          <div className="flex items-center justify-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#408A71]" />
-            AI Automation for modern businesses
-          </div>
+              {error && <p className="error-text" role="alert">{error}</p>}
+              
+              <div className="security-footer">
+                <span>🔒</span> Encrypted & processed securely via PayPal
+              </div>
+            </>
+          ) : (
+            <div className="success-box" role="status">
+              <div className="success-icon">✓</div>
+              <strong>Subscription Activated</strong>
+              <p>Reference ID: {subscriptionId}</p>
+              <span className="success-sub">We are setting up your onboarding portal now.</span>
+            </div>
+          )}
         </div>
-      </footer>
-    </main>
+      </main>
+
+      <style jsx global>{`
+        * { box-sizing: border-box; }
+        body {
+          margin: 0;
+          background: #090d16;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          color: #f8fafc;
+          -webkit-font-smoothing: antialiased;
+        }
+        .checkout-page {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+          background: radial-gradient(circle at 50% 0%, #1e293b 0%, #090d16 75%);
+        }
+        .checkout-card {
+          width: 100%;
+          max-width: 460px;
+          background: rgba(15, 23, 42, 0.75);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 20px;
+          padding: 36px;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 24px;
+        }
+        .back-link {
+          color: #94a3b8;
+          font-size: 13px;
+          font-weight: 500;
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          transition: color 0.2s;
+        }
+        .back-link:hover { color: #ffffff; }
+        .badge {
+          background: rgba(59, 130, 246, 0.1);
+          color: #60a5fa;
+          border: 1px solid rgba(59, 130, 246, 0.2);
+          font-size: 11px;
+          font-weight: 600;
+          padding: 4px 10px;
+          border-radius: 20px;
+          letter-spacing: 0.3px;
+        }
+        .hero-info { margin-bottom: 28px; }
+        .hero-info h1 {
+          margin: 0 0 8px;
+          font-size: 22px;
+          font-weight: 700;
+          letter-spacing: -0.4px;
+          color: #ffffff;
+        }
+        .hero-info p {
+          margin: 0;
+          color: #94a3b8;
+          font-size: 13px;
+          line-height: 1.6;
+        }
+        
+        .plan-switcher {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+          margin-bottom: 28px;
+        }
+        .plan-btn {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 16px;
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          border-radius: 12px;
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          text-align: left;
+        }
+        .plan-btn:hover {
+          background: rgba(255, 255, 255, 0.04);
+          border-color: rgba(255, 255, 255, 0.12);
+        }
+        .plan-meta {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          margin-bottom: 8px;
+        }
+        .plan-meta strong { font-size: 13px; color: #cbd5e1; font-weight: 600; }
+        .savings-badge {
+          background: rgba(16, 185, 129, 0.15);
+          color: #34d399;
+          font-size: 9px;
+          font-weight: 700;
+          padding: 2px 6px;
+          border-radius: 4px;
+        }
+        .plan-pricing { display: flex; align-items: baseline; gap: 4px; }
+        .plan-pricing .price { font-size: 18px; font-weight: 700; color: #ffffff; }
+        .plan-pricing .period { font-size: 11px; color: #64748b; }
+        
+        .plan-btn.active {
+          background: rgba(37, 99, 235, 0.12);
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 1px #3b82f6;
+        }
+        .plan-btn.active .plan-meta strong { color: #ffffff; }
+        
+        .paypal-wrapper { 
+          min-height: 55px; 
+          margin-bottom: 16px; 
+          position: relative;
+        }
+        .paypal-wrapper .hidden {
+          opacity: 0;
+          position: absolute;
+          pointer-events: none;
+        }
+        .paypal-wrapper .visible {
+          opacity: 1;
+          transition: opacity 0.2s ease-in;
+        }
+
+        .loading-pulse {
+          font-size: 12px;
+          text-align: center;
+          color: #64748b;
+          padding: 16px;
+          animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+          0% { opacity: 0.6; }
+          50% { opacity: 1; }
+          100% { opacity: 0.6; }
+        }
+        .error-text { font-size: 12px; color: #f87171; text-align: center; margin: 12px 0; }
+        
+        .security-footer {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          color: #64748b;
+          font-size: 11px;
+          margin-top: 20px;
+          border-top: 1px solid rgba(255, 255, 255, 0.04);
+          padding-top: 16px;
+        }
+        
+        .success-box {
+          background: rgba(6, 78, 59, 0.2);
+          border: 1px solid rgba(52, 211, 153, 0.3);
+          border-radius: 14px;
+          padding: 28px 20px;
+          text-align: center;
+        }
+        .success-icon {
+          width: 40px;
+          height: 40px;
+          background: #059669;
+          color: #ffffff;
+          border-radius: 50%;
+          display: grid;
+          place-items: center;
+          font-size: 18px;
+          font-weight: 700;
+          margin: 0 auto 12px;
+          box-shadow: 0 0 20px rgba(5, 150, 105, 0.4);
+        }
+        .success-box strong { color: #34d399; font-size: 15px; display: block; margin-bottom: 6px; }
+        .success-box p { color: #e2e8f0; font-size: 12px; margin: 0 0 10px; word-break: break-all; font-family: monospace; }
+        .success-sub { color: #94a3b8; font-size: 11px; display: block; }
+      `}</style>
+    </>
   );
 }
-
