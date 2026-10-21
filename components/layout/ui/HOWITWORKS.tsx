@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 
 const steps = [
@@ -26,7 +27,7 @@ const steps = [
 
 export default function SetupSteps() {
   return (
-    <section className="bg-[#2563EB] px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#00B4F0] via-[#00D8F0] to-[#22D3EE] px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
       <div className="mx-auto max-w-7xl">
         {/* Heading */}
         <div className="mb-10 text-center sm:mb-12 lg:mb-14">
@@ -48,26 +49,12 @@ export default function SetupSteps() {
                 {/* Number badge */}
                 <div
                   className="
-                    absolute
-                    -left-2
-                    -top-3
-                    z-10
-                    flex
-                    h-11
-                    w-11
-                    items-center
-                    justify-center
-                    rounded-full
-                    bg-[#2563EB]
-                    text-xl
-                    font-bold
-                    text-white
-                    shadow-lg
-                    shadow-blue-600/30
-                    sm:-left-3
-                    sm:-top-4
-                    sm:h-12
-                    sm:w-12
+                    absolute -left-2 -top-3 z-10
+                    flex h-11 w-11 items-center justify-center
+                    rounded-full bg-[#00B4F0]
+                    text-xl font-bold text-white
+                    shadow-lg shadow-cyan-900/20
+                    sm:-left-3 sm:-top-4 sm:h-12 sm:w-12
                     sm:text-2xl
                   "
                 >
@@ -77,12 +64,8 @@ export default function SetupSteps() {
                 {/* Image container */}
                 <div
                   className="
-                    relative
-                    aspect-[1.15/1]
-                    w-full
-                    overflow-hidden
-                    rounded-[18px]
-                    bg-[#111827]
+                    relative aspect-[1.15/1] w-full overflow-hidden
+                    rounded-[18px] bg-[#111827]
                     shadow-[0_6px_14px_rgba(0,0,0,0.25)]
                   "
                 >
@@ -91,7 +74,7 @@ export default function SetupSteps() {
                     alt={step.title}
                     fill
                     className="object-cover"
-                    sizes="200px"
+                    sizes="(max-width: 767px) 200px, 200px"
                   />
                 </div>
               </div>
@@ -102,7 +85,7 @@ export default function SetupSteps() {
                   {step.title}
                 </h3>
 
-                <p className="mt-3 text-[clamp(0.95rem,1.2vw,1.1rem)] leading-6 text-slate-300 sm:leading-7">
+                <p className="mt-3 text-[clamp(0.95rem,1.2vw,1.1rem)] leading-6 text-slate-900 sm:leading-7">
                   {step.description}
                 </p>
               </div>
