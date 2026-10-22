@@ -52,7 +52,7 @@ export default function App() {
         <div className="hidden md:flex items-center gap-3">
           {/* Login Button */}
           <Link
-            href="/login"
+            href="/loginPage"
             className="inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold text-white bg-[#0f172a] hover:bg-[#1e293b] border border-slate-700/80 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-400"
           >
             Login

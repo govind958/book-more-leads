@@ -11,47 +11,47 @@ type PageBuilder = {
 
 const PAGE_BUILDERS: PageBuilder[] = [
   {
-    name: "Elementor",
+    name: "Google",
     logo: "https://upload.wikimedia.org/wikipedia/commons/e/ee/Google_2026_logo.svg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
     alt: "Elementor logo",
   },
   {
-    name: "Oxygen",
+    name: "Slack",
     logo: "https://upload.wikimedia.org/wikipedia/commons/b/b9/Slack_Technologies_Logo.svg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
     alt: "Oxygen Builder logo",
   },
   {
-    name: "Beaver Builder",
+    name: "Facebook",
     logo: "https://upload.wikimedia.org/wikipedia/commons/b/b9/2023_Facebook_icon.svg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
     alt: "Beaver Builder logo",
   },
   {
-    name: "Divi",
+    name: "Stripe",
     logo: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
     alt: "Elegant Themes Divi logo",
   },
   {
-    name: "Breakdance",
+    name: "Clio",
     logo: "https://upload.wikimedia.org/wikipedia/en/6/61/Clio_Software_Company_Logo.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
     alt: "Breakdance Builder logo",
   },
   {
-    name: "Bricks",
+    name: "Shopify",
     logo: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Shopify_logo_2018.svg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
     alt: "Bricks Builder logo",
   },
   {
-    name: "Kadence WP",
+    name: "WooCommerce",
     logo: "https://upload.wikimedia.org/wikipedia/commons/d/d8/WooCommerce2025_logo.svg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
     alt: "Kadence WP logo",
   },
   {
-    name: "Brizy",
+    name: "Twilio",
     logo: "https://upload.wikimedia.org/wikipedia/commons/7/7e/Twilio-logo-red.svg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
     alt: "Brizy logo",
   },
   {
-    name: "Visual Composer",
+    name: "Printful",
     logo: "https://upload.wikimedia.org/wikipedia/commons/f/fb/PF-Linear-Full-color-black-RGB.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
     alt: "Visual Composer logo",
   },
@@ -62,42 +62,12 @@ type PageBuilderCompatibilityProps = {
   description?: string;
 };
 
-function BuilderCard({ builder }: { builder: PageBuilder }) {
+function BuilderItem({ builder }: { builder: PageBuilder }) {
   const [imageFailed, setImageFailed] = useState(false);
 
   return (
-    <div
-      className="
-        group relative flex min-h-[104px] min-w-0
-        items-center justify-center overflow-hidden
-        rounded-2xl border border-slate-200/80 bg-white
-        px-3 py-5
-        shadow-[0_6px_24px_rgba(0,0,0,0.12)]
-        transition-[transform,border-color,box-shadow]
-        duration-300 ease-out
-        hover:-translate-y-1
-        hover:border-cyan-400
-        hover:shadow-[0_12px_32px_rgba(0,180,240,0.16)]
-        motion-reduce:transform-none
-        motion-reduce:transition-none
-        sm:min-h-[120px] sm:rounded-[18px] sm:px-5
-        lg:min-h-[136px] lg:rounded-[20px] lg:px-6
-      "
-      aria-label={builder.name}
-    >
-      {/* Subtle hover accent */}
-      <div
-        aria-hidden="true"
-        className="
-          pointer-events-none absolute inset-x-6 top-0
-          h-px bg-gradient-to-r from-transparent
-          via-cyan-400 to-transparent opacity-0
-          transition-opacity duration-300
-          group-hover:opacity-100
-        "
-      />
-
-      <div className="flex h-[48px] w-full min-w-0 items-center justify-center sm:h-[56px] lg:h-[64px]">
+    <div className="group flex min-w-max shrink-0 items-center gap-2.5 px-4 py-2 sm:gap-3 sm:px-5">
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center sm:h-8 sm:w-8">
         {!imageFailed ? (
           <img
             src={builder.logo}
@@ -107,111 +77,118 @@ function BuilderCard({ builder }: { builder: PageBuilder }) {
             decoding="async"
             onError={() => setImageFailed(true)}
             className="
-              block max-h-full max-w-full
-              h-auto w-auto object-contain
-              transition-transform duration-300
-              group-hover:scale-[1.04]
-              motion-reduce:transform-none
-              motion-reduce:transition-none
+              max-h-7 max-w-7 object-contain
+              opacity-65 grayscale
+              transition duration-200
+              group-hover:opacity-100 group-hover:grayscale-0
+              sm:max-h-8 sm:max-w-8
             "
-            style={{
-              maxWidth: "100%",
-            }}
           />
         ) : (
-          <span className="text-center text-sm font-semibold text-slate-700">
-            {builder.name}
+          <span className="text-sm font-bold text-[#22D3EE]">
+            {builder.name.charAt(0)}
           </span>
         )}
       </div>
+
+      <span
+        className="
+          whitespace-nowrap text-sm font-semibold
+          tracking-tight text-slate-300
+          transition-colors duration-200
+          group-hover:text-white
+        "
+      >
+        {builder.name}
+      </span>
     </div>
   );
 }
 
 export default function PageBuilderCompatibility({
   title = "Integrates With Your Favorite Tools.",
-  description =
-    "BOOK MORE LEADS fits seamlessly into your business, connecting with the tools you already use.",
+  description = "BOOK MORE LEADS fits seamlessly into your business, connecting with the tools you already use.",
 }: PageBuilderCompatibilityProps) {
   return (
     <section
       aria-labelledby="builder-compatibility-title"
-      className="
-        relative isolate w-full overflow-hidden
-        bg-[#070B12] px-4 py-16 text-white
-        sm:px-6 sm:py-20 lg:px-8 lg:py-24
-      "
+      className="relative isolate w-full overflow-hidden bg-[#070B12] px-4 py-14 text-white sm:px-6 sm:py-16 lg:px-8 lg:py-20"
     >
-      {/* Background gradient */}
+      {/* Midnight navy background */}
       <div
         aria-hidden="true"
-        className="
-          pointer-events-none absolute inset-0 -z-10
-          bg-gradient-to-b from-[#070B12]
-          via-[#0B1329] to-[#101D38]
-        "
+        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-[#070B12] via-[#0B1329] to-[#070B12]"
       />
 
-      {/* Ambient cyan glow */}
+      {/* Subtle brand-colored ambient glow */}
       <div
         aria-hidden="true"
-        className="
-          pointer-events-none absolute left-1/2 top-0 -z-10
-          h-[260px] w-[min(90%,800px)]
-          -translate-x-1/2 rounded-full
-          bg-cyan-500/[0.07] blur-[100px]
-        "
+        className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[240px] w-[min(90%,800px)] -translate-x-1/2 rounded-full bg-[#1E40AF]/15 blur-[110px]"
       />
 
       <div className="mx-auto max-w-[1400px]">
-        {/* Section heading */}
-        <div className="mx-auto max-w-[1000px] text-center">
+        {/* Heading */}
+        <div className="mx-auto max-w-3xl text-center">
           <h2
             id="builder-compatibility-title"
-            className="
-              text-[clamp(1.8rem,4vw,3.8rem)]
-              font-extrabold leading-[1.1]
-              tracking-[-0.035em] text-white
-            "
+            className="text-[clamp(1.8rem,4vw,3.5rem)] font-extrabold leading-tight tracking-[-0.035em] text-white"
           >
             {title}
           </h2>
 
-          <p
-            className="
-              mx-auto mt-5 max-w-[760px]
-              text-[clamp(0.95rem,1.5vw,1.2rem)]
-              font-normal leading-7 text-slate-300
-              sm:mt-6 sm:leading-8
-            "
-          >
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:mt-5 sm:text-base sm:leading-8">
             {description}
           </p>
         </div>
 
-        {/* Responsive logo grid */}
-        <div
-          className="
-            mt-10 grid grid-cols-2 gap-3
-            sm:mt-14 sm:grid-cols-3 sm:gap-5
-            lg:mt-16 lg:gap-6 xl:gap-7
-          "
-        >
-          {PAGE_BUILDERS.map((builder) => (
-            <BuilderCard key={builder.name} builder={builder} />
-          ))}
-        </div>
+        {/* Single horizontal logo strip */}
+        <div className="relative mt-10 sm:mt-12 lg:mt-14">
+          <div
+            className="
+              relative overflow-hidden rounded-lg
+              border border-white/[0.14]
+              bg-[#080A18]/95
+              shadow-[0_12px_40px_rgba(0,0,0,0.28)]
+            "
+          >
+            {/* Fine top highlight */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[#22D3EE]/30 to-transparent"
+            />
 
-        {/* Supporting text */}
-        <p
-          className="
-            mx-auto mt-8 max-w-2xl text-center
-            text-xs leading-6 text-slate-400
-            sm:mt-10 sm:text-sm
-          "
-        >
-          Designed to fit into your existing workflow.
-        </p>
+            <div
+              className="
+                flex items-center gap-1
+                overflow-x-auto px-2 py-4
+                sm:gap-2 sm:px-3 sm:py-5
+                lg:justify-between lg:gap-0
+              "
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "#263B50 transparent",
+              }}
+            >
+              {PAGE_BUILDERS.map((builder, index) => (
+                <React.Fragment key={builder.name}>
+                  <BuilderItem builder={builder} />
+
+                  {index < PAGE_BUILDERS.length - 1 && (
+                    <div
+                      aria-hidden="true"
+                      className="h-5 w-px shrink-0 bg-white/[0.10]"
+                    />
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+
+          {/* Mobile scroll hint */}
+          <p className="mt-3 text-center text-xs text-slate-500 sm:hidden">
+            Swipe to see all integrations
+          </p>
+        </div>
       </div>
     </section>
   );

@@ -8,6 +8,8 @@ import SuccessStoriess from "@/components/layout/ui/SuccessStories";
 import TargetIndustries from "@/components/layout/ui/TargetIndustries";
 import Navbar from "@/components/layout/Navbar";
 import HeroSectionw from "@/components/layout/ui/HEROSECTION";
+import FAQ from "@/components/layout/ui/HomePageFAQ";
+import HomePageFAQ from  "@/components/layout/ui/HomePageFAQ"
 import PlatformCompatibility from "@/components/layout/ui/PlatformCompatibility";
 import MoneyBackGuarantee from "@/components/layout/ui/MoneyBackGuarantee";
 
@@ -130,56 +132,8 @@ export default function HomePage() {
       <MoneyBackGuarantee />
 
       {/* FAQ SECTION */}
-      <section id="faq" className="relative z-10 border-t border-slate-800 bg-[#070e12] py-20 sm:py-24 lg:py-28">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center">
-          <Reveal>
-            <span className="inline-flex rounded-full border border-slate-800 bg-[#0f172a] px-3.5 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
-              FAQ
-            </span>
-            <h2 className="mt-4 sm:mt-5 text-[clamp(1.5rem,4vw,3rem)] font-extrabold tracking-tight text-white">
-              Frequently Asked Questions
-            </h2>
-            <p className="mx-auto mt-3 sm:mt-5 max-w-2xl text-sm sm:text-base leading-6 sm:leading-7 text-slate-400">
-              Everything you need to know about getting started.
-            </p>
-          </Reveal>
-
-          <Reveal delay={120} className="mt-10 sm:mt-14 divide-y divide-slate-800 border-y border-slate-800 text-center">
-            {faqs.map((faq, index) => {
-              const isOpen = openFaq === index;
-              return (
-                <div key={index}>
-                  <button
-                    type="button"
-                    onClick={() => setOpenFaq(isOpen ? null : index)}
-                    className="flex w-full items-center justify-between gap-4 sm:gap-6 py-4 sm:py-6 text-left transition-colors hover:bg-white/[0.02]"
-                  >
-                    <span className="text-sm sm:text-base md:text-lg font-semibold text-white w-full text-center">
-                      {faq.question}
-                    </span>
-                    <ChevronDown
-                      className={`h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-slate-400 transition-transform duration-300 ${
-                        isOpen ? "rotate-180 text-blue-400" : ""
-                      }`}
-                    />
-                  </button>
-                  <div
-                    className={`grid transition-all duration-300 ease-in-out ${
-                      isOpen ? "grid-rows-[1fr] pb-4 sm:pb-6" : "grid-rows-[0fr]"
-                    }`}
-                  >
-                    <div className="overflow-hidden">
-                      <p className="mx-auto max-w-3xl text-xs sm:text-sm leading-relaxed text-slate-300 text-center">
-                        {faq.answer}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </Reveal>
-        </div>
-      </section>
+     
+      <HomePageFAQ />
 
       {/* FOOTER */}
       <Footer />

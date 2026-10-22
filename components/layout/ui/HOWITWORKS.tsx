@@ -32,7 +32,7 @@ export default function SetupSteps() {
         {/* Heading */}
         <div className="mb-10 text-center sm:mb-12 lg:mb-14">
           <h2 className="text-[clamp(1.75rem,3vw,3rem)] font-extrabold leading-tight tracking-tight text-white">
-            <span className="mr-2 inline-block">⏱️</span>
+          
             What your setup journey looks like
           </h2>
         </div>
