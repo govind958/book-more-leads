@@ -2,12 +2,12 @@
 "use client";
 
 import { useState, type FormEvent, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+
 import {
   ArrowRight,
   Check,
-  CheckCircle2,
   LoaderCircle,
-  LockKeyhole,
   Mail,
   Phone,
   ShieldCheck,
@@ -16,6 +16,7 @@ import {
   Building2,
   AlertCircle,
 } from "lucide-react";
+
 import { createClient } from "@/lib/supabase/client";
 
 type FormData = {
@@ -163,12 +164,12 @@ function Field({
 
 export default function GrowthPage() {
   const supabase = createClient();
+  const router = useRouter();
 
   const [form, setForm] = useState<FormData>(INITIAL_FORM);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [phoneError, setPhoneError] = useState("");
-  const [submittedName, setSubmittedName] = useState("");
 
   function updateField(field: keyof FormData, value: string) {
     setForm((previous) => ({ ...previous, [field]: value }));
@@ -223,13 +224,17 @@ export default function GrowthPage() {
 
       if (insertError) {
         console.error("Supabase lead insert error:", insertError);
+
         setError(
           "We couldn't submit your details right now. Please try again."
         );
+
         return;
       }
 
-      setSubmittedName(form.name.trim());
+      // ONLY CHANGE: REDIRECT AFTER SUCCESSFUL SUBMISSION
+      router.push("/callbooking");
+
     } catch (err) {
       console.error("Lead submission failed:", err);
       setError("Something went wrong. Please try again.");
@@ -238,93 +243,6 @@ export default function GrowthPage() {
     }
   }
 
-  // THANK YOU SCREEN
-  if (submittedName) {
-    return (
-      <main className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#060b14] px-4 py-5 text-white sm:px-6">
-        <Background />
-
-        <section className="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#0d1726]/95 shadow-2xl shadow-black/40 backdrop-blur-xl">
-          <div className="px-5 py-8 text-center sm:px-8 sm:py-10">
-            <div className="relative mx-auto flex h-20 w-20 items-center justify-center">
-              <div className="absolute inset-0 animate-ping rounded-full bg-emerald-400/10 [animation-duration:2.5s]" />
-
-              <div className="absolute inset-2 rounded-full border border-emerald-400/20 bg-emerald-400/10" />
-
-              <div className="relative flex h-12 w-12 animate-[successPop_500ms_ease-out_both] items-center justify-center rounded-full bg-emerald-400/15 text-emerald-400">
-                <CheckCircle2 className="h-8 w-8" strokeWidth={1.8} />
-              </div>
-            </div>
-
-            <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-400">
-              Submission received
-            </p>
-
-            <h1 className="mt-2 break-words text-2xl font-extrabold tracking-tight sm:text-3xl">
-              Thanks, {submittedName}!
-            </h1>
-
-            <p className="mx-auto mt-3 max-w-xs text-sm leading-6 text-slate-400">
-              You’re all set. Our team will be in touch soon.
-            </p>
-
-            <div className="mx-auto mt-6 flex max-w-xs items-center gap-3 rounded-2xl border border-blue-400/15 bg-blue-500/[0.06] px-4 py-3 text-left">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-300">
-                <Phone className="h-4 w-4" />
-              </div>
-
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-white">
-                  What’s next?
-                </p>
-                <p className="mt-0.5 text-xs leading-5 text-slate-400">
-                  We’ll contact you to talk about your business.
-                </p>
-              </div>
-            </div>
-
-            <a
-              href="/"
-              className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-900/25 transition hover:from-blue-500 hover:to-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-500/30"
-            >
-              Back to website
-              <ArrowRight className="h-4 w-4" />
-            </a>
-
-            <p className="mt-4 text-xs text-slate-500">
-              <LockKeyhole className="mr-1 inline h-3 w-3" />
-              Your information is secure
-            </p>
-          </div>
-        </section>
-
-        <style jsx global>{`
-          @keyframes successPop {
-            0% {
-              opacity: 0;
-              transform: scale(0.55);
-            }
-            70% {
-              opacity: 1;
-              transform: scale(1.12);
-            }
-            100% {
-              opacity: 1;
-              transform: scale(1);
-            }
-          }
-
-          @media (prefers-reduced-motion: reduce) {
-            .animate-ping {
-              animation: none !important;
-            }
-          }
-        `}</style>
-      </main>
-    );
-  }
-
-  // LEAD CAPTURE PAGE
   return (
     <main className="relative min-h-[100svh] overflow-hidden bg-[#060b14] px-4 py-5 text-white sm:px-6 sm:py-8 lg:flex lg:items-center lg:justify-center lg:py-12">
       <Background />
@@ -332,14 +250,12 @@ export default function GrowthPage() {
       <div className="relative z-10 mx-auto w-full max-w-6xl">
         <div className="grid overflow-hidden rounded-3xl border border-white/10 bg-[#0b1422]/90 shadow-2xl shadow-black/30 backdrop-blur-xl lg:grid-cols-[0.92fr_1.08fr]">
 
-          {/* FORM SECTION
-              Mobile/tablet: FIRST
-              Desktop: RIGHT
-          */}
+          {/* FORM SECTION */}
+
           <section className="order-1 flex min-w-0 flex-col justify-center px-5 py-8 sm:px-8 sm:py-10 lg:order-2 lg:px-10 lg:py-12 xl:px-12">
             <div className="mb-7">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400">
-                Let&apos;s connect
+                Let's connect
               </p>
 
               <h2 className="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
@@ -347,11 +263,12 @@ export default function GrowthPage() {
               </h2>
 
               <p className="mt-3 text-sm leading-6 text-slate-400">
-                Just the basics. We&apos;ll learn the rest when we talk.
+                Just the basics. We'll learn the rest when we talk.
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
+
               <Field
                 label="Your name"
                 icon={<UserRound className="h-4 w-4" />}
@@ -484,7 +401,7 @@ export default function GrowthPage() {
                   </>
                 ) : (
                   <>
-                    Let&apos;s Talk
+                    Let's Talk
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </>
                 )}
@@ -497,10 +414,8 @@ export default function GrowthPage() {
             </form>
           </section>
 
-          {/* INFORMATION SECTION
-              Mobile/tablet: BELOW FORM
-              Desktop: LEFT
-          */}
+          {/* INFORMATION SECTION */}
+
           <section className="relative order-2 flex flex-col justify-center overflow-hidden border-t border-white/10 px-5 py-8 sm:px-8 sm:py-10 lg:order-1 lg:border-r lg:border-t-0 lg:px-10 lg:py-12 xl:px-12">
             <div className="pointer-events-none absolute -left-24 top-12 h-64 w-64 rounded-full bg-blue-600/10 blur-[90px]" />
 
@@ -518,7 +433,7 @@ export default function GrowthPage() {
               </h1>
 
               <p className="mt-5 max-w-lg text-sm leading-7 text-slate-400 sm:text-base">
-                You&apos;re busy running your business. Your website and
+                You're busy running your business. Your website and
                 follow-up system should help you capture opportunities
                 instead of letting them slip away.
               </p>
@@ -544,12 +459,13 @@ export default function GrowthPage() {
                 <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-blue-300" />
 
                 <p className="text-xs leading-5 text-slate-400">
-                  No pressure. Share your details and let&apos;s start
+                  No pressure. Share your details and let's start
                   with a conversation about your business.
                 </p>
               </div>
             </div>
           </section>
+
         </div>
 
         <div className="mt-4 text-center text-xs text-slate-600">

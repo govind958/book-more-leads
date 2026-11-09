@@ -60,7 +60,7 @@ export default function App() {
 
           {/* Start 14-day trial Button */}
           <Link
-            href="/trial"
+            href="/growth"
             className="inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-bold text-slate-950 bg-gradient-to-r from-[#00b4d8] to-[#0096c7] hover:brightness-110 transition-all shadow-md shadow-cyan-500/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
           >
             Start 14-day trial

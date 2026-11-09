@@ -10,7 +10,7 @@ import Navbar from "@/components/layout/Navbar";
 import HeroSectionw from "@/components/layout/ui/HEROSECTION";
 import FAQ from "@/components/layout/ui/HomePageFAQ";
 import HomePageFAQ from  "@/components/layout/ui/HomePageFAQ"
-import PlatformCompatibility from "@/components/layout/ui/PlatformCompatibility";
+
 import MoneyBackGuarantee from "@/components/layout/ui/MoneyBackGuarantee";
 
 import {
@@ -114,7 +114,7 @@ export default function HomePage() {
       <HeroSectionw/>
 
       {/* PLATFORM COMPATIBILITY */}
-      <PlatformCompatibility />
+      
 
       {/* SETUP STEPS */}
       <SetupSteps />

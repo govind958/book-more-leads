@@ -61,7 +61,7 @@ export default function PricingCard() {
             </div>
 
             <a
-              href="/callbooking"
+              href="/growth"
               className="mt-7 flex h-12 items-center justify-center rounded-lg bg-[#1683F7] text-sm font-bold text-white transition hover:bg-[#0f75df]"
             >
               Start Your 14-Day Trial
@@ -113,7 +113,7 @@ export default function PricingCard() {
             </div>
 
             <a
-              href="/callbooking"
+              href="/growth"
               className="mt-7 flex h-12 items-center justify-center rounded-lg bg-white text-sm font-bold text-[#15538A] transition hover:bg-blue-50"
             >
               Talk About Your Project

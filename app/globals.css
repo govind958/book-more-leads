@@ -24,3 +24,41 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+@keyframes shimmer-text {
+  0% {
+    background-position: 200% center;
+  }
+
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.animate-shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #080b18 0%,
+    #080b18 35%,
+    #1e40af 48%,
+    #3b82f6 50%,
+    #1e40af 52%,
+    #080b18 65%,
+    #080b18 100%
+  );
+
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: shimmer-text 4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer-text {
+    animation: none;
+    background-position: center;
+  }
+}
