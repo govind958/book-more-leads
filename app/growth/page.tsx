@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, type FormEvent, type ReactNode } from "react";
@@ -204,13 +203,14 @@ export default function GrowthPage() {
     setLoading(true);
 
     try {
+      const trimmedName = form.name.trim();
       const digits = getPhoneDigits(form.phone);
       const normalizedPhone = `+1${digits}`;
 
       const { error: insertError } = await supabase
         .from("leads")
         .insert({
-          name: form.name.trim(),
+          name: trimmedName,
           email: form.email.trim().toLowerCase(),
           phone: normalizedPhone,
           company: form.company.trim(),
@@ -232,9 +232,12 @@ export default function GrowthPage() {
         return;
       }
 
-      // ONLY CHANGE: REDIRECT AFTER SUCCESSFUL SUBMISSION
-      router.push("/callbooking");
+      const firstName = trimmedName.split(/\s+/)[0] || "";
+      const query = firstName
+        ? `?name=${encodeURIComponent(firstName)}`
+        : "";
 
+      router.push(`/callbooking${query}`);
     } catch (err) {
       console.error("Lead submission failed:", err);
       setError("Something went wrong. Please try again.");
