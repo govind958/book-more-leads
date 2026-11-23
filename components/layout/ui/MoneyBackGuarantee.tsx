@@ -108,7 +108,7 @@ export default function MoneyBackGuarantee() {
             <div className="flex items-center justify-center gap-4 lg:justify-start">
               <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-blue-100">
                 <Image
-                  src="/images/founder.png"
+                  src="/foun.jpg"
                   alt="Founder"
                   fill
                   className="object-cover"

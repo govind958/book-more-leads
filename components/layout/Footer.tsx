@@ -1,7 +1,5 @@
-
 import Link from "next/link";
 import {
-  CalendarCheck,
   ArrowUpRight,
   LinkIcon,
   VideoIcon,
@@ -18,14 +16,11 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 lg:col-span-1">
             <Link href="/" className="flex w-fit items-center gap-2.5">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
-                <CalendarCheck size={23} strokeWidth={2} />
-              </div>
-
-              <span className="text-base font-extrabold tracking-tight text-slate-900">
-                BOOK MORE{" "}
-                <span className="text-blue-600">LEADS</span>
-              </span>
+              <img
+                src="/bookmoreleads.png"
+                alt="BookMoreLeads"
+                className="h-8 w-auto object-contain sm:h-9"
+              />
             </Link>
 
             <p className="mt-5 max-w-xs text-sm leading-7 text-slate-500">
@@ -61,7 +56,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/pricing" className="transition-colors hover:text-blue-600">
+                <Link href="/price" className="transition-colors hover:text-blue-600">
                   Pricing
                 </Link>
               </li>
@@ -111,7 +106,7 @@ export default function Footer() {
 
             <ul className="mt-5 space-y-3.5 text-sm">
               <li>
-                <Link href="/about" className="transition-colors hover:text-blue-600">
+                <Link href="/aboutus" className="transition-colors hover:text-blue-600">
                   About Us
                 </Link>
               </li>
@@ -121,7 +116,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="transition-colors hover:text-blue-600">
+                <Link href="/TermsOfService" className="transition-colors hover:text-blue-600">
                   Terms of Service
                 </Link>
               </li>
