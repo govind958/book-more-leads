@@ -2,12 +2,14 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import PricePageFAQ from "@/components/layout/ui/PricePageFAQ";
+
 import {
   ArrowRight,
   Check,
+  CheckCircle2,
   ChevronDown,
   Clock3,
   MapPin,
@@ -17,25 +19,14 @@ import {
   Star,
   Users,
   Zap,
+  Globe,
+  TrendingUp,
 } from "lucide-react";
-
-/* -------------------------------------------------------
-   BRAND COLORS — MIDNIGHT CYAN
-------------------------------------------------------- */
-const C = {
-  bg: "#070B12",
-  navy: "#0B1329",
-  blue: "#1E40AF",
-  cyan: "#00B4F0",
-  aqua: "#00D8F0",
-  text: "#FFFFFF",
-  muted: "#94A3B8",
-  body: "#CBD5E1",
-};
 
 /* -------------------------------------------------------
    REVEAL ANIMATION
 ------------------------------------------------------- */
+
 function Reveal({
   children,
   delay = 0,
@@ -52,6 +43,11 @@ function Reveal({
     const element = ref.current;
     if (!element) return;
 
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -59,10 +55,14 @@ function Reveal({
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.12, rootMargin: "0px 0px -30px 0px" }
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -30px 0px",
+      }
     );
 
     observer.observe(element);
+
     return () => observer.disconnect();
   }, []);
 
@@ -82,16 +82,19 @@ function Reveal({
 }
 
 /* -------------------------------------------------------
-   PRICING
+   PRICING PLANS
 ------------------------------------------------------- */
+
 const pricingPlans = [
   {
     id: "monthly",
     name: "Monthly",
     price: 297,
-    period: "month",
+    priceLabel: "$297",
+    period: "/month",
     total: "$297 billed monthly",
-    description: "Get started with your lead-to-job system.",
+    description:
+      "Get started with your complete lead-to-job system.",
     features: [
       "Professional contractor website",
       "Automated lead follow-up",
@@ -107,7 +110,8 @@ const pricingPlans = [
     id: "quarterly",
     name: "3-Month Plan",
     price: 297,
-    period: "month",
+    priceLabel: "$297",
+    period: "/month",
     total: "$891 for 3 months",
     description:
       "Build momentum with three months of the system and complimentary Google Business Profile optimization.",
@@ -115,7 +119,7 @@ const pricingPlans = [
       "Everything in the monthly plan",
       "Google Business Profile optimization included free",
       "Local listing review and improvement",
-      "Review and business information check",
+      "Business information check",
       "Lead follow-up and missed-call text back",
       "Past-customer re-engagement",
     ],
@@ -126,7 +130,8 @@ const pricingPlans = [
     id: "yearly",
     name: "Annual",
     price: 247.5,
-    period: "month",
+    priceLabel: "$247.50",
+    period: "/month",
     total: "$2,970 billed annually",
     description:
       "A full year of the system at the equivalent of 10 monthly payments.",
@@ -143,10 +148,14 @@ const pricingPlans = [
   },
 ];
 
+/* -------------------------------------------------------
+   CORE FEATURES
+------------------------------------------------------- */
+
 const coreFeatures = [
   {
     title: "Professional Contractor Website",
-    icon: Zap,
+    icon: Globe,
     description:
       "A professional online presence designed to make it easier for homeowners to contact your business.",
     points: [
@@ -160,7 +169,7 @@ const coreFeatures = [
     title: "Automated Lead Follow-Up",
     icon: MessageSquareText,
     description:
-      "Help enquiries receive a timely response instead of being forgotten in a busy workday.",
+      "Help enquiries receive a timely response instead of being forgotten during a busy workday.",
     points: [
       "Automated confirmations for new enquiries",
       "Follow-up messages using configured workflows",
@@ -179,7 +188,7 @@ const coreFeatures = [
     ],
   },
   {
-    title: "Review Request Automation",
+    title: "5-Star Magic Review Funnel",
     icon: Star,
     description:
       "Make it easier to ask customers for honest feedback after a completed job.",
@@ -190,10 +199,10 @@ const coreFeatures = [
     ],
   },
   {
-    title: "Past-Customer Re-Engagement",
+    title: "1-Click Marketing Campaigns",
     icon: Users,
     description:
-      "Reconnect with past customers and make it easier for them to return or refer someone.",
+      "Reconnect with past customers and create opportunities for repeat business and referrals.",
     points: [
       "Re-engagement campaigns for eligible contacts",
       "Seasonal or service reminders where appropriate",
@@ -214,6 +223,10 @@ const coreFeatures = [
   },
 ];
 
+/* -------------------------------------------------------
+   ADDITIONAL SERVICES
+------------------------------------------------------- */
+
 const otherServices = [
   {
     title: "Advanced SEO",
@@ -232,49 +245,10 @@ const otherServices = [
   },
 ];
 
-const faqs = [
-  {
-    question: "What is included in the 3-month plan?",
-    answer:
-      "The three-month plan costs $891 for the full three-month period. It includes the core lead-to-job system and complimentary Google Business Profile optimization. Confirm the exact setup, billing, and service scope before purchasing.",
-  },
-  {
-    question: "What does free Google Business Profile optimization mean?",
-    answer:
-      "We review your existing profile and help improve its completeness, including relevant business information, categories, services, service areas, and available photos. It does not guarantee higher rankings, more calls, or a specific number of leads. Google controls search placement.",
-  },
-  {
-    question: "How much does the monthly plan cost?",
-    answer:
-      "The monthly plan is $297 per month. The annual plan is $2,970 billed annually, equivalent to $247.50 per month. The three-month plan is $891 for the full three-month period.",
-  },
-  {
-    question: "Can I cancel my plan?",
-    answer:
-      "Cancellation terms depend on the plan and payment agreement. Please review the terms presented before you subscribe, especially for the three-month and annual options.",
-  },
-  {
-    question: "Will this guarantee more leads or jobs?",
-    answer:
-      "No specific number of leads, rankings, or booked jobs is guaranteed. The system is designed to help you respond to enquiries, follow up consistently, and make better use of the opportunities your business receives.",
-  },
-  {
-    question: "What other services do you offer?",
-    answer:
-      "Additional services may include advanced SEO, Google Ads management, and further local marketing support. These can be discussed during your strategy call and may have separate fees.",
-  },
-];
-
-const money = (amount: number) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
-  }).format(amount);
-
 /* -------------------------------------------------------
    REUSABLE ACCORDION
 ------------------------------------------------------- */
+
 function Accordion({
   title,
   children,
@@ -287,19 +261,20 @@ function Accordion({
   onClick: () => void;
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-[#070B12] transition-colors hover:border-[#00B4F0]/30">
+    <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#071426] transition-colors duration-300 hover:border-blue-400/30">
       <button
         type="button"
         aria-expanded={open}
         onClick={onClick}
-        className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left sm:px-5"
+        className="flex w-full items-center justify-between gap-5 px-5 py-5 text-left sm:px-6 sm:py-6"
       >
-        <span className="text-sm font-semibold leading-6 text-white sm:text-base">
+        <span className="text-sm font-semibold leading-7 text-white sm:text-base">
           {title}
         </span>
+
         <ChevronDown
           aria-hidden="true"
-          className={`h-4 w-4 shrink-0 text-[#00D8F0] transition-transform duration-200 ${
+          className={`h-4 w-4 shrink-0 text-blue-400 transition-transform duration-200 ${
             open ? "rotate-180" : ""
           }`}
         />
@@ -311,7 +286,7 @@ function Accordion({
         }`}
       >
         <div className="overflow-hidden">
-          <div className="space-y-3 border-t border-white/10 px-4 py-4 text-sm leading-7 text-[#CBD5E1] sm:px-5">
+          <div className="space-y-4 border-t border-white/10 px-5 py-5 text-sm leading-8 text-slate-400 sm:px-6 sm:py-6">
             {children}
           </div>
         </div>
@@ -321,272 +296,276 @@ function Accordion({
 }
 
 /* -------------------------------------------------------
-   PAGE
+   MAIN PAGE
 ------------------------------------------------------- */
+
 export default function PricingPage() {
-  const [openFeature, setOpenFeature] = useState<number | null>(null);
+  const [openFeature, setOpenFeature] = useState<number | null>(0);
   const [openService, setOpenService] = useState<number | null>(null);
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
     <main
-      className="relative min-h-screen overflow-x-clip bg-[#070B12] font-sans text-white"
+      className="relative min-h-screen overflow-x-clip bg-[#071426] font-sans text-white"
       style={{
         backgroundImage:
-          "radial-gradient(ellipse at 50% 0%, rgba(30,64,175,0.16), transparent 42%)",
+          "radial-gradient(ellipse at 50% 0%, rgba(37,99,235,0.16), transparent 45%)",
       }}
     >
       <Navbar />
 
-      {/* HERO */}
-      <section className="relative px-4 pb-14 pt-28 sm:px-6 sm:pb-20 sm:pt-36 lg:px-8">
-        <div className="pointer-events-none absolute left-1/2 top-20 -z-0 h-64 w-64 -translate-x-1/2 rounded-full bg-[#00B4F0]/10 blur-[100px]" />
+      {/* ------------------------------------------------
+          HERO
+      ------------------------------------------------ */}
+
+      <section className="relative px-5 pb-24 pt-28 sm:px-8 sm:pb-28 sm:pt-36 lg:pb-32 lg:pt-40">
+        <div className="pointer-events-none absolute left-1/2 top-10 h-80 w-80 -translate-x-1/2 rounded-full bg-blue-500/10 blur-[120px]" />
 
         <Reveal className="relative mx-auto max-w-4xl text-center">
-         
-          <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl">
-            Simple pricing.
-            <span className="mt-2 block bg-gradient-to-r from-[#00B4F0] to-[#00D8F0] bg-clip-text text-transparent">
-              More control over every lead.
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/10 px-4 py-2.5 text-xs font-semibold tracking-wider text-blue-300">
+            <Zap size={14} />
+            SIMPLE PRICING FOR CONTRACTORS
+          </div>
+
+          <h1 className="text-4xl font-black leading-[1.15] tracking-tight sm:text-5xl md:text-6xl">
+            Simple Pricing.
+            <span className="mt-3 block bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+              A Smarter Way to Grow.
             </span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-[#CBD5E1] sm:text-lg sm:leading-8">
-            Capture enquiries, follow up automatically, and make it easier
-            for customers to choose your contracting business.
+          <p className="mx-auto mt-8 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg">
+            Everything you need to capture enquiries, follow up
+            automatically, build trust, and bring customers back.
+            One connected lead-to-job system for your contracting business.
           </p>
 
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-sm text-[#94A3B8]">
-            <span className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-[#00D8F0]" />
-              No setup fee advertised
-            </span>
-            <span className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-[#00D8F0]" />
-              Clear plan pricing
-            </span>
-            <span className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-[#00D8F0]" />
-              Built for contractors
-            </span>
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm text-slate-400">
+            {[
+              "Built for Contractors",
+              "Automated Follow-Up",
+              "One Connected System",
+            ].map((item) => (
+              <span key={item} className="flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-blue-400" />
+                {item}
+              </span>
+            ))}
           </div>
+
+          <button
+            onClick={() =>
+              document.getElementById("pricing")?.scrollIntoView({
+                behavior: "smooth",
+              })
+            }
+            className="mt-11 inline-flex items-center gap-3 rounded-xl bg-blue-600 px-8 py-4 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition duration-300 hover:-translate-y-1 hover:bg-blue-500"
+          >
+            Explore Plans
+            <ArrowRight size={17} />
+          </button>
         </Reveal>
       </section>
 
-      {/* PRICING CARDS */}
+      {/* ------------------------------------------------
+          PRICING CARDS
+      ------------------------------------------------ */}
+
       <section
         id="pricing"
-        className="scroll-mt-24 px-4 pb-20 sm:px-6 lg:px-8 lg:pb-28"
+        className="scroll-mt-24 border-y border-white/[0.06] px-5 py-24 sm:px-8 sm:py-28 lg:py-32"
       >
-        <div className="mx-auto grid max-w-6xl grid-cols-1 items-stretch gap-6 md:grid-cols-3">
-          {pricingPlans.map((plan, index) => (
-            <Reveal key={plan.id} delay={index * 100} className="flex">
-              <article
-                className={`relative flex w-full flex-col rounded-3xl border p-6 sm:p-7 ${
-                  plan.highlighted
-                    ? "border-[#00B4F0]/70 bg-gradient-to-b from-[#10213B] to-[#0B1329] shadow-[0_0_45px_rgba(0,180,240,0.10)] md:-translate-y-2"
-                    : "border-white/10 bg-[#0B1329]/80"
-                }`}
+        <div className="mx-auto max-w-7xl">
+          <Reveal className="mb-16 text-center">
+            <p className="text-xs font-bold tracking-[0.2em] text-blue-400">
+              CHOOSE YOUR PLAN
+            </p>
+
+            <h2 className="mt-5 text-3xl font-black tracking-tight sm:text-4xl">
+              Find the Right Plan for Your Business.
+            </h2>
+
+            <p className="mx-auto mt-5 max-w-2xl text-sm leading-8 text-slate-400 sm:text-base">
+              Choose the billing option that works best for you.
+            </p>
+          </Reveal>
+
+          <div className="grid grid-cols-1 items-stretch gap-8 md:grid-cols-3 lg:gap-7">
+            {pricingPlans.map((plan, index) => (
+              <Reveal
+                key={plan.id}
+                delay={index * 100}
+                className="flex"
               >
-                {plan.highlighted && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-[#00B4F0] to-[#00D8F0] px-4 py-1.5 text-[10px] font-extrabold tracking-[0.12em] text-[#070B12] sm:text-xs">
-                    BEST VALUE
-                  </div>
-                )}
-
-                <div className="mb-5">
-                  <h2 className="text-xl font-bold text-white sm:text-2xl">
-                    {plan.name}
-                  </h2>
-                  <p className="mt-3 min-h-[72px] text-sm leading-6 text-[#94A3B8]">
-                    {plan.description}
-                  </p>
-                </div>
-
-                <div className="border-b border-white/10 pb-6">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-5xl font-extrabold tracking-tight text-white">
-                      {money(plan.price)}
-                    </span>
-                    <span className="text-sm text-[#94A3B8]">
-                      /month
-                    </span>
-                  </div>
-
-                  <p className="mt-2 text-sm font-medium text-[#CBD5E1]">
-                    {plan.total}
-                  </p>
-
-                  {plan.id === "yearly" && (
-                    <p className="mt-2 text-xs font-semibold text-[#22D3EE]">
-                      Save $594 vs. 12 monthly payments
-                    </p>
-                  )}
-
-                  {plan.id === "quarterly" && (
-                    <p className="mt-2 text-xs font-semibold text-[#22D3EE]">
-                      Includes complimentary profile optimization
-                    </p>
-                  )}
-                </div>
-
-                <ul className="my-6 flex-1 space-y-3.5">
-                  {plan.features.map((feature) => {
-                    const isBonus =
-                      plan.id === "quarterly" &&
-                      feature.includes("free");
-
-                    return (
-                      <li
-                        key={feature}
-                        className="flex items-start gap-3 text-sm leading-6 text-[#CBD5E1]"
-                      >
-                        <span
-                          className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
-                            isBonus
-                              ? "bg-[#00D8F0]/15 text-[#00D8F0]"
-                              : "bg-white/5 text-[#22D3EE]"
-                          }`}
-                        >
-                          <Check className="h-3.5 w-3.5" />
-                        </span>
-                        <span>{feature}</span>
-                      </li>
-                    );
-                  })}
-                </ul>
-
-                {plan.id === "quarterly" && (
-                  <div className="mb-5 rounded-xl border border-[#00B4F0]/20 bg-[#00B4F0]/5 p-4">
-                    <div className="flex items-center gap-2 text-sm font-bold text-[#22D3EE]">
-                      <MapPin className="h-4 w-4" />
-                      Included at no extra charge
-                    </div>
-                    <p className="mt-2 text-xs leading-5 text-[#CBD5E1]">
-                      Google Business Profile optimization during your
-                      three-month plan. No ranking or lead guarantees.
-                    </p>
-                  </div>
-                )}
-
-                <a
-                  href="/growth"
-                  className={`mt-auto inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-center text-sm font-bold transition-all ${
+                <article
+                  className={`relative flex w-full flex-col rounded-3xl border p-7 transition duration-300 hover:-translate-y-1 sm:p-9 ${
                     plan.highlighted
-                      ? "bg-gradient-to-r from-[#00B4F0] to-[#00D8F0] text-[#070B12] hover:brightness-110"
-                      : "border border-white/15 bg-white/5 text-white hover:border-[#00B4F0]/50 hover:bg-[#00B4F0]/10"
+                      ? "border-blue-400/60 bg-gradient-to-b from-[#102B50] to-[#0B1B30] shadow-[0_0_45px_rgba(37,99,235,0.13)]"
+                      : "border-white/10 bg-[#0B1B30]/80 hover:border-blue-400/30"
                   }`}
                 >
-                  {plan.button}
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-
-                <p className="mt-3 text-center text-[11px] leading-5 text-[#64748B]">
-                  Review the plan terms before subscribing.
-                </p>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-
-        <p className="mx-auto mt-7 max-w-3xl text-center text-xs leading-6 text-[#64748B]">
-          All prices are in USD. The three-month plan is $891 total and
-          the annual plan is $2,970 upfront. Confirm billing and
-          cancellation terms at checkout. Third-party usage or messaging
-          charges, if applicable, should be disclosed separately.
-        </p>
-      </section>
-
-      {/* VALUE PROPOSITION */}
-      <section className="border-y border-white/10 bg-[#0B1329]/60 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <Reveal className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00D8F0]">
-              Why Book More Leads
-            </p>
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-              A better process from enquiry to job.
-            </h2>
-            <p className="mt-4 text-base leading-7 text-[#94A3B8]">
-              You already have a business to run. Your lead follow-up
-              system should help you stay responsive while you focus on
-              the work.
-            </p>
-          </Reveal>
-
-          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                icon: PhoneCall,
-                title: "Respond faster",
-                body: "Help enquiries get a response even when you cannot answer the phone.",
-              },
-              {
-                icon: MessageSquareText,
-                title: "Follow up consistently",
-                body: "Use configured workflows to reduce forgotten enquiries.",
-              },
-              {
-                icon: Star,
-                title: "Request reviews",
-                body: "Make it easier to ask customers for honest feedback.",
-              },
-              {
-                icon: Users,
-                title: "Reconnect",
-                body: "Create opportunities to follow up with past customers.",
-              },
-            ].map((item, index) => {
-              const Icon = item.icon;
-
-              return (
-                <Reveal key={item.title} delay={index * 70}>
-                  <div className="h-full rounded-2xl border border-white/10 bg-[#070B12]/70 p-5 transition-colors hover:border-[#00B4F0]/30">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#00B4F0]/20 bg-[#00B4F0]/10 text-[#22D3EE]">
-                      <Icon className="h-5 w-5" />
+                  {plan.highlighted && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-blue-600 px-4 py-1.5 text-[10px] font-extrabold tracking-widest text-white shadow-lg shadow-blue-600/20">
+                      FEATURED PLAN
                     </div>
-                    <h3 className="mt-4 font-bold text-white">
-                      {item.title}
+                  )}
+
+                  <div className="mb-8">
+                    <h3 className="text-xl font-bold text-white sm:text-2xl">
+                      {plan.name}
                     </h3>
-                    <p className="mt-2 text-sm leading-6 text-[#94A3B8]">
-                      {item.body}
+
+                    <p className="mt-4 min-h-[72px] text-sm leading-7 text-slate-400">
+                      {plan.description}
                     </p>
                   </div>
-                </Reveal>
-              );
-            })}
+
+                  <div className="border-b border-white/10 pb-7">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-black tracking-tight text-white sm:text-5xl">
+                        {plan.priceLabel}
+                      </span>
+
+                      <span className="text-sm text-slate-400">
+                        {plan.period}
+                      </span>
+                    </div>
+
+                    <p className="mt-4 text-sm font-medium text-slate-300">
+                      {plan.total}
+                    </p>
+
+                    {plan.id === "yearly" && (
+                      <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-3 py-2 text-xs font-bold text-blue-300">
+                        <CheckCircle2 size={14} />
+                        Save $594 annually
+                      </div>
+                    )}
+
+                    {plan.id === "quarterly" && (
+                      <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-3 py-2 text-xs font-bold text-blue-300">
+                        <MapPin size={14} />
+                        Free Google Profile Optimization
+                      </div>
+                    )}
+                  </div>
+
+                  <ul className="my-8 flex-1 space-y-5">
+                    {plan.features.map((feature) => {
+                      const isBonus =
+                        plan.id === "quarterly" &&
+                        feature.toLowerCase().includes("free");
+
+                      return (
+                        <li
+                          key={feature}
+                          className="flex items-start gap-3 text-sm leading-7 text-slate-300"
+                        >
+                          <span
+                            className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
+                              isBonus
+                                ? "bg-blue-500/20 text-blue-300"
+                                : "bg-white/[0.06] text-blue-400"
+                            }`}
+                          >
+                            <Check size={13} />
+                          </span>
+
+                          <span>{feature}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+
+                  {plan.id === "quarterly" && (
+                    <div className="mb-6 rounded-xl border border-blue-400/20 bg-blue-500/[0.07] p-5">
+                      <div className="flex items-center gap-2 text-sm font-bold text-blue-300">
+                        <MapPin size={17} />
+                        Included at No Extra Charge
+                      </div>
+
+                      <p className="mt-3 text-xs leading-7 text-slate-400">
+                        Google Business Profile optimization during
+                        your three-month plan. No ranking or lead
+                        guarantees.
+                      </p>
+                    </div>
+                  )}
+
+                  <a
+                    href="/growth"
+                    className={`mt-auto inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-xl px-5 py-4 text-center text-sm font-bold transition duration-300 ${
+                      plan.highlighted
+                        ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20 hover:bg-blue-500"
+                        : "border border-white/15 bg-white/[0.04] text-white hover:border-blue-400/40 hover:bg-blue-500/10"
+                    }`}
+                  >
+                    {plan.button}
+                    <ArrowRight size={17} />
+                  </a>
+
+                  <p className="mt-5 text-center text-[11px] leading-6 text-slate-500">
+                    Review plan terms before subscribing.
+                  </p>
+                </article>
+              </Reveal>
+            ))}
           </div>
+
+          <p className="mx-auto mt-12 max-w-3xl text-center text-xs leading-7 text-slate-500">
+            All prices are in USD. The three-month plan is $891
+            total and the annual plan is $2,970 upfront. Confirm
+            billing and cancellation terms at checkout. Third-party
+            usage or messaging charges, if applicable, should be
+            disclosed separately.
+          </p>
         </div>
       </section>
 
-      {/* SERVICE BREAKDOWN */}
-      <section className="px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
-        <div className="mx-auto max-w-6xl">
+      {/* ------------------------------------------------
+          INCLUDED FEATURES
+      ------------------------------------------------ */}
+
+      <section className="border-b border-white/[0.06] px-5 py-24 sm:px-8 sm:py-28 lg:py-32">
+        <div className="mx-auto max-w-7xl">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00D8F0]">
-              What's included
+            <p className="text-xs font-bold tracking-[0.2em] text-blue-400">
+              EXPLORE THE SYSTEM
             </p>
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-              Your system, explained.
+
+            <h2 className="mt-5 text-3xl font-black tracking-tight sm:text-5xl">
+              Everything Your Business Needs.
             </h2>
-            <p className="mt-4 text-base leading-7 text-[#94A3B8]">
-              Explore the core features and optional marketing services.
+
+            <p className="mt-6 text-sm leading-8 text-slate-400 sm:text-base">
+              Explore the tools included in your Lead-to-Job System
+              and understand how each one supports your business.
             </p>
           </Reveal>
 
-          <div className="mt-10 grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+          <div className="mt-16 grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-10">
+            {/* Core System */}
+
             <Reveal>
-              <div className="rounded-2xl border border-white/10 bg-[#0B1329]/70 p-4 sm:p-6">
-                <div className="mb-5 rounded-xl border border-[#00B4F0]/20 bg-gradient-to-r from-[#10213B] to-[#0B1329] p-4">
-                  <h3 className="text-lg font-bold text-white">
-                    Contractor Lead-to-Job System
-                  </h3>
-                  <p className="mt-1 text-sm text-[#94A3B8]">
-                    Tools to help manage enquiries and follow-up.
-                  </p>
+              <div className="rounded-3xl border border-white/10 bg-[#0B1B30] p-6 sm:p-8">
+                <div className="mb-8 rounded-2xl border border-blue-400/20 bg-gradient-to-br from-[#102B50] to-[#102039] p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/15 text-blue-400">
+                      <Zap size={22} />
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-bold text-white">
+                        Lead-to-Job System
+                      </h3>
+
+                      <p className="mt-2 text-xs text-slate-400">
+                        Your connected business tools
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {coreFeatures.map((feature, index) => {
                     const Icon = feature.icon;
 
@@ -601,22 +580,35 @@ export default function PricingPage() {
                           )
                         }
                       >
-                        <div className="flex items-start gap-3">
-                          <Icon className="mt-1 h-5 w-5 shrink-0 text-[#22D3EE]" />
+                        <div className="flex items-start gap-4">
+                          <Icon className="mt-1 h-5 w-5 shrink-0 text-blue-400" />
+
                           <p>{feature.description}</p>
                         </div>
 
-                        <ul className="space-y-2 pt-2">
+                        <ul className="space-y-4 pt-2">
                           {feature.points.map((point) => (
                             <li
                               key={point}
-                              className="flex items-start gap-2"
+                              className="flex items-start gap-3"
                             >
-                              <Check className="mt-1 h-4 w-4 shrink-0 text-[#22D3EE]" />
+                              <Check
+                                size={16}
+                                className="mt-1 shrink-0 text-blue-400"
+                              />
                               <span>{point}</span>
                             </li>
                           ))}
                         </ul>
+
+                        {feature.title ===
+                          "Google Business Profile Optimization" && (
+                          <p className="rounded-lg border border-blue-400/20 bg-blue-500/[0.07] p-4 text-xs leading-7 text-blue-200">
+                            Complimentary with the three-month plan.
+                            Not included as a free bonus in the other
+                            plans.
+                          </p>
+                        )}
                       </Accordion>
                     );
                   })}
@@ -624,18 +616,29 @@ export default function PricingPage() {
               </div>
             </Reveal>
 
+            {/* Additional Services */}
+
             <Reveal delay={100}>
-              <div className="rounded-2xl border border-white/10 bg-[#0B1329]/70 p-4 sm:p-6">
-                <div className="mb-5 rounded-xl border border-white/10 bg-[#111D35] p-4">
-                  <h3 className="text-lg font-bold text-white">
-                    Additional Services
-                  </h3>
-                  <p className="mt-1 text-sm text-[#94A3B8]">
-                    Additional work available by discussion.
-                  </p>
+              <div className="rounded-3xl border border-white/10 bg-[#0B1B30] p-6 sm:p-8">
+                <div className="mb-8 rounded-2xl border border-white/10 bg-[#102039] p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
+                      <TrendingUp size={22} />
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-bold text-white">
+                        Additional Services
+                      </h3>
+
+                      <p className="mt-2 text-xs text-slate-400">
+                        Extra growth opportunities
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {otherServices.map((service, index) => (
                     <Accordion
                       key={service.title}
@@ -652,21 +655,26 @@ export default function PricingPage() {
                   ))}
                 </div>
 
-                <div className="mt-5 rounded-xl border border-white/10 bg-[#070B12] p-4">
-                  <div className="flex items-center gap-2 text-sm font-bold text-white">
-                    <Search className="h-4 w-4 text-[#00D8F0]" />
-                    Not sure what you need?
+                <div className="mt-8 rounded-2xl border border-white/[0.08] bg-[#071426] p-6">
+                  <div className="flex items-center gap-3">
+                    <Search size={19} className="text-blue-400" />
+
+                    <h4 className="text-sm font-bold text-white">
+                      Not Sure What You Need?
+                    </h4>
                   </div>
-                  <p className="mt-2 text-sm leading-6 text-[#94A3B8]">
+
+                  <p className="mt-4 text-sm leading-8 text-slate-400">
                     Book a call and discuss which services fit your
-                    current setup and goals.
+                    current setup and business goals.
                   </p>
+
                   <a
-                    href="/growth"
-                    className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#22D3EE] hover:text-white"
+                    href="/callbooking"
+                    className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-blue-400 transition hover:text-blue-300"
                   >
-                    Discuss your business
-                    <ArrowRight className="h-4 w-4" />
+                    Discuss Your Business
+                    <ArrowRight size={16} />
                   </a>
                 </div>
               </div>
@@ -675,53 +683,62 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="relative overflow-hidden border-y border-[#00B4F0]/15 bg-[#0B1329] px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+      {/* ------------------------------------------------
+          FINAL CTA
+      ------------------------------------------------ */}
+
+      <section className="relative overflow-hidden border-y border-white/[0.06] bg-[#0B1329] px-5 py-24 sm:px-8 sm:py-28 lg:py-32">
         <div className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full bg-[#1E40AF]/20 blur-[100px]" />
+
         <div className="pointer-events-none absolute -left-20 bottom-0 h-60 w-60 rounded-full bg-[#00B4F0]/10 blur-[100px]" />
 
-        <Reveal className="relative mx-auto max-w-4xl text-center">
+        <div className="relative mx-auto max-w-4xl text-center">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#22D3EE]">
             One connected system
           </p>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+
+          <h2 className="mt-6 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
             More opportunities.
-            <span className="mt-2 block text-[#22D3EE]">
+            <span className="mt-3 block text-[#22D3EE]">
               Less leakage.
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#CBD5E1] sm:text-lg">
+
+          <p className="mx-auto mt-7 max-w-2xl text-base leading-8 text-[#CBD5E1] sm:text-lg">
             Stop letting good opportunities disappear between the
             first enquiry and the booked job.
           </p>
 
           <a
             href="/growth"
-            className="mt-8 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#00B4F0] to-[#00D8F0] px-7 py-4 text-sm font-extrabold text-[#070B12] transition hover:brightness-110 sm:w-auto sm:text-base"
+            className="mt-10 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#00B4F0] to-[#00D8F0] px-8 py-5 text-sm font-extrabold text-[#070B12] transition duration-300 hover:brightness-110 sm:w-auto sm:text-base"
           >
             Book a Free Strategy Call
             <ArrowRight className="h-5 w-5" />
           </a>
 
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-xs text-[#94A3B8]">
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-7 gap-y-4 text-xs text-[#94A3B8]">
             <span className="flex items-center gap-2">
               <Clock3 className="h-4 w-4 text-[#22D3EE]" />
               20-minute call
             </span>
+
             <span className="flex items-center gap-2">
               <Check className="h-4 w-4 text-[#22D3EE]" />
               No pressure
             </span>
+
             <span className="flex items-center gap-2">
               <Check className="h-4 w-4 text-[#22D3EE]" />
               Discuss your goals
             </span>
           </div>
-        </Reveal>
+        </div>
       </section>
 
-     {/* FAQ */}
-      <PricePageFAQ />
+      {/* ------------------------------------------------
+          FOOTER
+      ------------------------------------------------ */}
 
       <Footer />
     </main>
